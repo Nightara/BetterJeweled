@@ -18,8 +18,19 @@ public class CrystalGrid
   Crystal[] colors;
   Crystal[][] field;
 
+
+  /**
+   *
+   * @throws IllegalArgumentException if either of sizeX or sizeY is <= 0.
+   */
   public CrystalGrid(int sizeX, int sizeY, Crystal... colors)
   {
+    if(sizeX <= 0) {
+      throw new IllegalArgumentException("X size cannot be <= 0 but was " + sizeX);
+    }
+    if(sizeY <= 0) {
+      throw new IllegalArgumentException("Y size cannot be <= 0 but was " + sizeY);
+    }
     this.sizeX = sizeX;
     this.sizeY = sizeY;
     this.colors = colors;

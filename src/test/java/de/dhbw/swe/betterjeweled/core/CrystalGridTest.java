@@ -30,25 +30,6 @@ class CrystalGridTest
   }
 
   @Test
-  void getCrystalOutOfBounds()
-  {
-    int sizeX = 2;
-    int sizeY = 5;
-    CrystalGrid grid = new CrystalGrid(sizeX, sizeY);
-
-    assertDoesNotThrow(() -> grid.getCrystal(0,0));
-    assertDoesNotThrow(() -> grid.getCrystal(1,4));
-    assertTrue(assertThrows(IndexOutOfBoundsException.class, () -> grid.getCrystal(2, 0))
-        .getMessage().contains("[" + sizeX + ", " + sizeY + "]"));
-    assertTrue(assertThrows(IndexOutOfBoundsException.class, () -> grid.getCrystal(0, 5))
-        .getMessage().contains("[" + sizeX + ", " + sizeY + "]"));
-    assertTrue(assertThrows(IndexOutOfBoundsException.class, () -> grid.getCrystal(-1, 0))
-        .getMessage().contains("[" + sizeX + ", " + sizeY + "]"));
-    assertTrue(assertThrows(IndexOutOfBoundsException.class, () -> grid.getCrystal(0, -1))
-        .getMessage().contains("[" + sizeX + ", " + sizeY + "]"));
-  }
-
-  @Test
   void fillEmptyGrid()
   {
     int sizeX = 2;
@@ -104,17 +85,6 @@ class CrystalGridTest
 
     assertEquals(crysTwo, grid.getCrystal(posXOne, posYOne));
     assertEquals(crysOne, grid.getCrystal(posXTwo, posYTwo));
-  }
-
-  @Test
-  void switchCrystalsOutOfBounds()
-  {
-    CrystalGrid grid = new CrystalGrid(2, 5, RED, GREEN, BLUE);
-    grid.fillGrid();
-
-    assertThrows(IndexOutOfBoundsException.class, () -> grid.switchCrystals(0,-1,0,0));
-    assertThrows(IndexOutOfBoundsException.class, () -> grid.switchCrystals(1,4,2,4));
-    assertThrows(IndexOutOfBoundsException.class, () -> grid.switchCrystals(-1,-1,-1,-2));
   }
 
   @Test
