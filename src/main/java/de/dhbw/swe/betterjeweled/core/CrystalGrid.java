@@ -10,7 +10,7 @@ import java.util.stream.*;
 @Value
 public class CrystalGrid
 {
-  public static final int TRIGGER_SIZE = 3;
+  public static final int MIN_COMBO_SIZE = 3;
   public static final int SCORE_BASE = 100;
 
   int sizeX;
@@ -25,11 +25,11 @@ public class CrystalGrid
    */
   public CrystalGrid(int sizeX, int sizeY, Crystal... colors)
   {
-    if(sizeX <= 0) {
-      throw new IllegalArgumentException("X size cannot be <= 0 but was " + sizeX);
+    if(sizeX < MIN_COMBO_SIZE) {
+      throw new IllegalArgumentException("X size cannot be less than " + MIN_COMBO_SIZE + " but was " + sizeX);
     }
-    if(sizeY <= 0) {
-      throw new IllegalArgumentException("Y size cannot be <= 0 but was " + sizeY);
+    if(sizeY < MIN_COMBO_SIZE) {
+      throw new IllegalArgumentException("Y size cannot be less than " + MIN_COMBO_SIZE + " but was " + sizeY);
     }
     this.sizeX = sizeX;
     this.sizeY = sizeY;
@@ -125,7 +125,7 @@ public class CrystalGrid
       // Search in X direction
       for(int y = 0; y < getSizeY(); y++)
       {
-        for(int startX = 0; startX <= getSizeX() - TRIGGER_SIZE; startX++)
+        for(int startX = 0; startX <= getSizeX() - MIN_COMBO_SIZE; startX++)
         {
           int endX = startX;
           while(endX < getSizeX() && filteredGrid[endX][y])
@@ -133,7 +133,7 @@ public class CrystalGrid
             endX++;
           }
 
-          if(endX - startX >= TRIGGER_SIZE)
+          if(endX - startX >= MIN_COMBO_SIZE)
           {
             regions.add(new CrystalRegion(startX, y, endX,y + 1));
           }
@@ -143,7 +143,7 @@ public class CrystalGrid
       // Search in Y direction
       for(int x = 0; x < getSizeX(); x++)
       {
-        for(int startY = 0; startY <= getSizeY() - TRIGGER_SIZE; startY++)
+        for(int startY = 0; startY <= getSizeY() - MIN_COMBO_SIZE; startY++)
         {
           int endY = startY;
           while(endY < getSizeY() && filteredGrid[x][endY])
@@ -151,7 +151,7 @@ public class CrystalGrid
             endY++;
           }
 
-          if(endY - startY >= TRIGGER_SIZE)
+          if(endY - startY >= MIN_COMBO_SIZE)
           {
             regions.add(new CrystalRegion(x, startY,x + 1, endY));
           }
@@ -184,13 +184,13 @@ public class CrystalGrid
 
   public static int scoreRegion(CrystalRegion region)
   {
-    if(region.getSize() < TRIGGER_SIZE)
+    if(region.getSize() < MIN_COMBO_SIZE)
     {
       return 0;
     }
     else
     {
-      int scoreSize = 1 + region.getSize() - TRIGGER_SIZE;
+      int scoreSize = 1 + region.getSize() - MIN_COMBO_SIZE;
       return scoreSize * scoreSize * SCORE_BASE;
     }
   }
