@@ -9,7 +9,7 @@ import java.awt.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CrystalGridInvalidArgumentsTest {
+public class CrystalGridBoundsTest {
 
     private static final Crystal RED = new Crystal(Color.RED);
     private static final Crystal GREEN = new Crystal(Color.GREEN);
