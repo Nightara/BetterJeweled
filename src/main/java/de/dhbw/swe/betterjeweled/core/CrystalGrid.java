@@ -18,11 +18,21 @@ public class CrystalGrid
   Crystal[] colors;
   Crystal[][] field;
 
+  @EqualsAndHashCode.Exclude
+  @Getter(AccessLevel.PRIVATE)
+  Random random;
+
   public CrystalGrid(int sizeX, int sizeY, Crystal... colors)
+  {
+    this(sizeX, sizeY, new Random().nextInt(), colors);
+  }
+
+  public CrystalGrid(int sizeX, int sizeY, int seed, Crystal... colors)
   {
     this.sizeX = sizeX;
     this.sizeY = sizeY;
     this.colors = colors;
+    this.random = new Random(seed);
     this.field = new Crystal[sizeX][sizeY];
   }
 
@@ -58,11 +68,6 @@ public class CrystalGrid
 
   public int fillGrid()
   {
-    return fillGrid(new Random());
-  }
-
-  public int fillGrid(Random seed)
-  {
     int generated = 0;
     for(int posX = 0; posX < getSizeX(); posX++)
     {
@@ -70,7 +75,7 @@ public class CrystalGrid
       {
         if(getCrystal(posX, posY).isEmpty())
         {
-          setCrystal(posX, posY, getColors()[seed.nextInt(getColors().length)]);
+          setCrystal(posX, posY, getColors()[getRandom().nextInt(getColors().length)]);
           generated++;
         }
       }
