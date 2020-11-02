@@ -87,16 +87,24 @@ public class CrystalGrid
   {
     if(Math.abs(posXOne - posXTwo) + Math.abs(posYOne - posYTwo) == 1)
     {
-      Optional<Crystal> crysOne = getCrystal(posXOne, posYOne);
-      Optional<Crystal> crysTwo = getCrystal(posXTwo, posYTwo);
-
-      setCrystal(posXOne, posYOne, crysTwo.orElse(null));
-      setCrystal(posXTwo, posYTwo, crysOne.orElse(null));
-
+      exchangeCrystals(posXOne, posYOne, posXTwo, posYTwo);
       return true;
     }
 
     return false;
+  }
+
+  /**
+   *
+   * @throws IndexOutOfBoundsException if the supplied coordinates are outside of the grid.
+   */
+  private void exchangeCrystals(int posXOne, int posYOne, int posXTwo, int posYTwo)
+  {
+    Optional<Crystal> crysOne = getCrystal(posXOne, posYOne);
+    Optional<Crystal> crysTwo = getCrystal(posXTwo, posYTwo);
+
+    setCrystal(posXOne, posYOne, crysTwo.orElse(null));
+    setCrystal(posXTwo, posYTwo, crysOne.orElse(null));
   }
 
   public Map<Crystal, List<CrystalRegion>> findRegions()
@@ -169,6 +177,26 @@ public class CrystalGrid
           }
           return scoreRegion(region);
         }).sum();
+  }
+
+  public void shiftCrystals()
+  {
+    for(int x = 0; x < getSizeX(); x++)
+    {
+      for(int y = getSizeY() - 1; y > 0; y--)
+      {
+        int shift = 0;
+        while(shift <= y && getCrystal(x, y - shift).isEmpty())
+        {
+          shift++;
+        }
+
+        if(shift <= y)
+        {
+          exchangeCrystals(x, y, x,y - shift);
+        }
+      }
+    }
   }
 
   public static int scoreRegion(CrystalRegion region)
