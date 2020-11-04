@@ -125,6 +125,7 @@ public class CrystalGrid
           if(endX - startX >= TRIGGER_SIZE)
           {
             regions.add(new CrystalRegion(startX, y, endX,y + 1));
+            startX = endX - 1;
           }
         }
       }
@@ -143,6 +144,7 @@ public class CrystalGrid
           if(endY - startY >= TRIGGER_SIZE)
           {
             regions.add(new CrystalRegion(x, startY,x + 1, endY));
+            startY = endY - 1;
           }
         }
       }
@@ -150,6 +152,7 @@ public class CrystalGrid
       return regions;
     }));
   }
+
 
   public int triggerRegions()
   {
