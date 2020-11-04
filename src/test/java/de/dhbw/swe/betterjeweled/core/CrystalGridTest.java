@@ -139,7 +139,7 @@ class CrystalGridTest
 
   private CrystalGrid setupTriggerGrid()
   {
-    CrystalGrid grid = new CrystalGrid(3, 5, RED, GREEN, BLUE);
+    CrystalGrid grid = new CrystalGrid(4, 5, RED, GREEN, BLUE);
     grid.setCrystal(0,0, RED);
     grid.setCrystal(0,1, RED);
     grid.setCrystal(0,2, RED);
@@ -158,6 +158,12 @@ class CrystalGridTest
     grid.setCrystal(2,3, RED);
     grid.setCrystal(2,4, GREEN);
 
+    grid.setCrystal(3,0, RED);
+    grid.setCrystal(3,1, RED);
+    grid.setCrystal(3,2, RED);
+    grid.setCrystal(3,3, RED);
+    grid.setCrystal(3,4, RED);
+
     return grid;
   }
 
@@ -169,7 +175,7 @@ class CrystalGridTest
     Map<Crystal, List<CrystalRegion>> regions = grid.findRegions();
 
     assertEquals(3, regions.keySet().size());
-    assertEquals(1, regions.get(RED).size());
+    assertEquals(2, regions.get(RED).size());
     assertEquals(1, regions.get(GREEN).size());
     assertEquals(1, regions.get(BLUE).size());
   }
