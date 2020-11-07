@@ -1,8 +1,10 @@
 package de.dhbw.swe.betterjeweled.core;
 
 import lombok.*;
+import lombok.experimental.NonFinal;
 
 @Value
+@NonFinal
 public class CrystalRegion
 {
   int startX;
@@ -18,5 +20,15 @@ public class CrystalRegion
   public int getSize()
   {
     return Math.abs(getStartX() - getEndX()) * Math.abs(getStartY() - getEndY());
+  }
+
+  public boolean intersects(CrystalRegion other) {
+    boolean intersects = false;
+    for (int i = startX; i < endX; i++) {
+      for (int j = startY; j < endY; j++) {
+        intersects = intersects || other.contains(i, j);
+      }
+    }
+    return intersects;
   }
 }
