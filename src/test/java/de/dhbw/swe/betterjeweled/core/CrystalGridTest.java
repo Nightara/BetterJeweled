@@ -209,4 +209,32 @@ class CrystalGridTest
 
     assertTrue(CrystalGrid.scoreRegion(r4_1) > CrystalGrid.scoreRegion(r3_1) + CrystalGrid.scoreRegion(r3_2));
   }
+
+  @Test
+  void shiftGrid()
+  {
+    CrystalGrid grid = setupTriggerGrid();
+    grid.triggerRegions();
+    long emptyFields = Arrays.stream(grid.getField())
+        .flatMap(Arrays::stream)
+        .filter(Objects::isNull)
+        .count();
+
+    grid.shiftCrystals();
+
+    assertEquals(emptyFields, Arrays.stream(grid.getField())
+        .flatMap(Arrays::stream)
+        .filter(Objects::isNull)
+        .count());
+
+    for(int x = 0; x < grid.getSizeX(); x++)
+    {
+      for(int y = 0; y < grid.getSizeY() - 1; y++)
+      {
+        // [x, y + 1] is empty => [x, y] is empty
+        assertTrue(grid.getCrystal(x,y + 1).isPresent() || grid.getCrystal(x, y).isEmpty(),
+            "[" + x + ", " + (y + 1) + "] is empty, but [" + x + ", " + y + "] isn't.");
+      }
+    }
+  }
 }
