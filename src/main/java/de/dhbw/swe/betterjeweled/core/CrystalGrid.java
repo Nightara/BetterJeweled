@@ -144,8 +144,8 @@ public class CrystalGrid
    *
    * @param posXOne The x (Horizontal) coordinate of the first crystal
    * @param posYOne The y (Vertical) coordinate of the first crystal
-   * @param posXTwo The x (Horizontal) coordinate of the first crystal
-   * @param posYTwo The y (Vertical) coordinate of the first crystal
+   * @param posXTwo The x (Horizontal) coordinate of the second crystal
+   * @param posYTwo The y (Vertical) coordinate of the second crystal
    * @return True if the request resulted in a change of the grid, false otherwise
    * @throws IndexOutOfBoundsException if the supplied coordinates are outside of the grid.
    */
