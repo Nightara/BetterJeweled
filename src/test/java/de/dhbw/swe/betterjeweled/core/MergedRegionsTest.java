@@ -54,5 +54,4 @@ public class MergedRegionsTest {
 
         assertTrue(region1.intersects(region3));
     }
-
 }
