@@ -58,11 +58,11 @@ class CrystalGridTest
     int seed = new Random().nextInt();
     int sizeX = 3;
     int sizeY = 5;
-    CrystalGrid gridOne = new CrystalGrid(sizeX, sizeY, RED, GREEN, BLUE);
-    CrystalGrid gridTwo = new CrystalGrid(sizeX, sizeY, RED, GREEN, BLUE);
+    CrystalGrid gridOne = new CrystalGrid(sizeX, sizeY, seed, RED, GREEN, BLUE);
+    CrystalGrid gridTwo = new CrystalGrid(sizeX, sizeY, seed, RED, GREEN, BLUE);
 
-    gridOne.fillGrid(new Random(seed));
-    gridTwo.fillGrid(new Random(seed));
+    gridOne.fillGrid();
+    gridTwo.fillGrid();
 
     assertEquals(gridOne, gridTwo);
   }

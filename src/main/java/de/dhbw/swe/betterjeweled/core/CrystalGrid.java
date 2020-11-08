@@ -46,6 +46,10 @@ public class CrystalGrid
   int sizeY;
   Crystal[] colors;
   Crystal[][] field;
+  
+  @EqualsAndHashCode.Exclude
+  @Getter(AccessLevel.PRIVATE)
+  Random random;
 
   /**
    * The default constructor.
@@ -57,15 +61,31 @@ public class CrystalGrid
    */
   public CrystalGrid(int sizeX, int sizeY, Crystal... colors)
   {
+    this(sizeX, sizeY, new Random().nextInt(), colors);
+  }
+
+  /**
+   * The default constructor.
+   *
+   * @param sizeX  The x (Horizontal) size of the grid
+   * @param sizeY  The y (Vertical) size of the grid
+   * @param seed   The seed to initialize this grid's Random
+   * @param colors The colors available for the grid
+   * @throws IllegalArgumentException if either of sizeX or sizeY is <= 0.
+   */
+  public CrystalGrid(int sizeX, int sizeY, int seed, Crystal... colors)
+  {
     if(sizeX < MIN_COMBO_SIZE) {
       throw new IllegalArgumentException("X size cannot be less than " + MIN_COMBO_SIZE + " but was " + sizeX);
     }
     if(sizeY < MIN_COMBO_SIZE) {
       throw new IllegalArgumentException("Y size cannot be less than " + MIN_COMBO_SIZE + " but was " + sizeY);
     }
+
     this.sizeX = sizeX;
     this.sizeY = sizeY;
     this.colors = colors;
+    this.random = new Random(seed);
     this.field = new Crystal[sizeX][sizeY];
   }
 
@@ -122,11 +142,6 @@ public class CrystalGrid
    */
   public int fillGrid()
   {
-    return fillGrid(new Random());
-  }
-
-  public int fillGrid(Random seed)
-  {
     int generated = 0;
     for(int posX = 0; posX < getSizeX(); posX++)
     {
@@ -134,7 +149,7 @@ public class CrystalGrid
       {
         if(getCrystal(posX, posY).isEmpty())
         {
-          setCrystal(posX, posY, getColors()[seed.nextInt(getColors().length)]);
+          setCrystal(posX, posY, getColors()[getRandom().nextInt(getColors().length)]);
           generated++;
         }
       }
