@@ -1,5 +1,7 @@
 package de.dhbw.swe.betterjeweled.core;
 
+import java.util.*;
+import java.util.stream.*;
 import lombok.*;
 
 /**
@@ -33,10 +35,26 @@ import lombok.*;
 @Value
 public class CrystalRegion
 {
-  int startX;
-  int startY;
-  int endX;
-  int endY;
+  @Getter(AccessLevel.PRIVATE)
+  Set<Position> positions;
+
+  private CrystalRegion(Collection<Position> positions)
+  {
+    this.positions = new HashSet<>(positions);
+  }
+
+  public CrystalRegion(int startX, int startY, int endX, int endY)
+  {
+    this(Collections.emptySet());
+
+    for(int i = startX; i < endX; i++)
+    {
+      for(int j = startY; j < endY; j++)
+      {
+        positions.add(new Position(i, j));
+      }
+    }
+  }
 
   /**
    * Returns whether the field with the supplied coordinates are contained within this region.
@@ -47,7 +65,7 @@ public class CrystalRegion
    */
   public boolean contains(int posX, int posY)
   {
-    return posX >= getStartX() && posX < getEndX() && posY >= getStartY() && posY < getEndY();
+    return getPositions().contains(new Position(posX, posY));
   }
 
   /**
@@ -57,6 +75,34 @@ public class CrystalRegion
    */
   public int getSize()
   {
-    return Math.abs(getStartX() - getEndX()) * Math.abs(getStartY() - getEndY());
+    return getPositions().size();
+  }
+
+  public boolean intersects(CrystalRegion other)
+  {
+    return getPositions().stream()
+        .anyMatch(other.getPositions()::contains);
+  }
+
+  public static CrystalRegion merge(CrystalRegion... regions)
+  {
+    return merge(Arrays.asList(regions));
+  }
+
+  public static CrystalRegion merge(Collection<CrystalRegion> regions)
+  {
+    Set<Position> fields = regions.stream()
+        .map(CrystalRegion::getPositions)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
+
+    return new CrystalRegion(fields);
+  }
+
+  @Value
+  public static class Position
+  {
+    int x;
+    int y;
   }
 }

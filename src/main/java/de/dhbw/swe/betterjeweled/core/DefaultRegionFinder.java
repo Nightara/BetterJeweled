@@ -45,6 +45,7 @@ public class DefaultRegionFinder implements RegionFinder
           if(endX - startX >= MIN_COMBO_SIZE)
           {
             regions.add(new CrystalRegion(startX, y, endX,y + 1));
+            startX = endX - 1;
           }
         }
       }
@@ -63,6 +64,7 @@ public class DefaultRegionFinder implements RegionFinder
           if(endY - startY >= MIN_COMBO_SIZE)
           {
             regions.add(new CrystalRegion(x, startY,x + 1, endY));
+            startY = endY - 1;
           }
         }
       }
