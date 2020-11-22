@@ -2,9 +2,17 @@ package de.dhbw.swe.betterjeweled.core;
 
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MergedRegionsTest {
+
+    private static final Crystal RED = new Crystal(Color.RED);
+    private static final Crystal GREEN = new Crystal(Color.GREEN);
+    private static final Crystal BLUE = new Crystal(Color.BLUE);
 
     @Test
     void regionsIntersect() {
@@ -24,9 +32,9 @@ public class MergedRegionsTest {
 
     @Test
     void mergedRegionOverlapsNormalRegion() {
-        MergedCrystalRegion region1 = new MergedCrystalRegion(1, 1, 2, 4);
+        CrystalRegion region1 = new CrystalRegion(1, 1, 2, 4);
         CrystalRegion region2 = new CrystalRegion(1, 1, 4, 2);
-        region1.addOverlappingRegion(region2);
+        region1.mergeWith(region2);
 
         CrystalRegion region3 = new CrystalRegion(3, 0, 4, 3);
         CrystalRegion region4 = new CrystalRegion(0, 3, 3, 4);
@@ -42,15 +50,15 @@ public class MergedRegionsTest {
 
     @Test
     void mergedRegionOverlapsMergedRegion() {
-        MergedCrystalRegion region1 = new MergedCrystalRegion(1, 1, 2, 4);
+        CrystalRegion region1 = new CrystalRegion(1, 1, 2, 4);
         CrystalRegion region2 = new CrystalRegion(1, 1, 4, 2);
         assertTrue(region1.intersects(region2));
-        region1.addOverlappingRegion(region2);
+        region1.mergeWith(region2);
 
-        MergedCrystalRegion region3 = new MergedCrystalRegion(3, 0, 4, 4);
+        CrystalRegion region3 = new CrystalRegion(3, 0, 4, 4);
         CrystalRegion region4 = new CrystalRegion(3, 3, 6, 4);
         assertTrue(region3.intersects(region4));
-        region3.addOverlappingRegion(region4);
+        region3.mergeWith(region4);
 
         assertTrue(region1.intersects(region3));
     }

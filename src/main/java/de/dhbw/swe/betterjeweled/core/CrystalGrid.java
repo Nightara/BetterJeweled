@@ -130,6 +130,8 @@ public class CrystalGrid
         }
       }
 
+
+
       // Search in Y direction
       for(int x = 0; x < getSizeX(); x++)
       {
@@ -160,19 +162,19 @@ public class CrystalGrid
             regions.keySet()) {
       List<CrystalRegion> temp = regions.get(crystal);
       List<CrystalRegion> temp2 = new ArrayList<>();
-      MergedCrystalRegion tempMerged;
-      while(!temp.isEmpty()) {
+      CrystalRegion tempMerged;
+      while (!temp.isEmpty()) {
         boolean mergeFound = false;
-        tempMerged = new MergedCrystalRegion(temp.get(0).getStartX(), temp.get(0).getStartY(), temp.get(0).getEndX(), temp.get(0).getEndY());
+        tempMerged = new CrystalRegion(temp.get(0).getStartX(), temp.get(0).getStartY(), temp.get(0).getEndX(), temp.get(0).getEndY());
         for (int i = 1; i < temp.size(); i++) {
-          if(tempMerged.intersects(temp.get(i))) {
+          if (tempMerged.intersects(temp.get(i))) {
             mergeFound = true;
-            tempMerged.addOverlappingRegion(temp.get(i));
+            tempMerged.mergeWith(temp.get(i));
             temp.remove(i);
             i--;
           }
         }
-        if(mergeFound) {
+        if (mergeFound) {
           temp2.add(tempMerged);
         } else {
           temp2.add(temp.get(0));
@@ -185,19 +187,6 @@ public class CrystalGrid
     }
     return toReturn;
   }
-
-/*  private MergedCrystalRegion mergeRegions(CrystalRegion region1, CrystalRegion region2) {
-    if(region1 instanceof MergedCrystalRegion) {
-      ((MergedCrystalRegion) region1).addOverlappingRegion(region2);
-      return (MergedCrystalRegion) region1;
-    } else if (region2 instanceof MergedCrystalRegion) {
-      ((MergedCrystalRegion) region2).addOverlappingRegion(region1);
-      return (MergedCrystalRegion) region2;
-    }
-    MergedCrystalRegion temp = new MergedCrystalRegion(region1.getStartX(), region1.getStartY(), region1.getEndX(), region1.getEndY());
-    temp.addOverlappingRegion(region2);
-    return temp;
-  }*/
 
   public int triggerRegions()
   {
