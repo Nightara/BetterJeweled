@@ -162,26 +162,16 @@ public class CrystalGrid
             regions.keySet()) {
       List<CrystalRegion> temp = regions.get(crystal);
       List<CrystalRegion> temp2 = new ArrayList<>();
-      CrystalRegion tempMerged;
       while (!temp.isEmpty()) {
-        boolean mergeFound = false;
-        tempMerged = new CrystalRegion(temp.get(0).getStartX(), temp.get(0).getStartY(), temp.get(0).getEndX(), temp.get(0).getEndY());
         for (int i = 1; i < temp.size(); i++) {
-          if (tempMerged.intersects(temp.get(i))) {
-            mergeFound = true;
-            tempMerged.mergeWith(temp.get(i));
+          if (temp.get(0).intersects(temp.get(i))) {
+            temp.get(0).mergeWith(temp.get(i));
             temp.remove(i);
             i--;
           }
         }
-        if (mergeFound) {
-          temp2.add(tempMerged);
-        } else {
-          temp2.add(temp.get(0));
-        }
+        temp2.add(temp.get(0));
         temp.remove(0);
-        tempMerged = null;
-        mergeFound = false;
       }
       toReturn.put(crystal, temp2);
     }

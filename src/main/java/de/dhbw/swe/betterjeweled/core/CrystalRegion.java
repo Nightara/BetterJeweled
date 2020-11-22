@@ -1,13 +1,11 @@
 package de.dhbw.swe.betterjeweled.core;
 
 import lombok.*;
-import lombok.experimental.NonFinal;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Value
-@NonFinal
 public class CrystalRegion
 {
 
