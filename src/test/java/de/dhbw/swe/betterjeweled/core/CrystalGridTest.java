@@ -132,11 +132,12 @@ class CrystalGridTest
   }
 
   @Test
-  void findRegions()
+  void findDefaultRegions()
   {
     CrystalGrid grid = setupTriggerGrid();
+    RegionFinder regionFinder = new DefaultRegionFinder();
 
-    Map<Crystal, List<CrystalRegion>> regions = grid.findRegions();
+    Map<Crystal, List<CrystalRegion>> regions = regionFinder.findRegions(grid, grid.getColors());
 
     assertEquals(3, regions.keySet().size());
     assertEquals(1, regions.get(RED).size());
@@ -149,9 +150,11 @@ class CrystalGridTest
   {
     CrystalGrid originalGrid = setupTriggerGrid();
     CrystalGrid grid = setupTriggerGrid();
-    Map<Crystal, List<CrystalRegion>> regions = grid.findRegions();
+    RegionFinder regionFinder = new DefaultRegionFinder();
+    RegionScorer regionScorer = new DefaultRegionScorer();
+    Map<Crystal, List<CrystalRegion>> regions = regionFinder.findRegions(grid);
 
-    assertTrue(grid.triggerRegions() > 0);
+    assertTrue(grid.triggerRegions(regions, regionScorer) > 0);
 
     for(int x = 0; x < grid.getSizeX(); x++)
     {
@@ -175,7 +178,7 @@ class CrystalGridTest
   void partialRefill()
   {
     CrystalGrid grid = setupTriggerGrid();
-    grid.triggerRegions();
+    grid.triggerRegions(new DefaultRegionFinder(), new DefaultRegionScorer());
     long expectedRefill = grid.getSize() - Arrays.stream(grid.getField())
         .flatMap(Arrays::stream)
         .filter(Objects::nonNull)
@@ -190,6 +193,8 @@ class CrystalGridTest
   @Test
   void scoreRegion()
   {
+    RegionScorer regionScorer = new DefaultRegionScorer();
+
     CrystalRegion r1_1 = new CrystalRegion(0,0,1,1);
     CrystalRegion r1_2 = new CrystalRegion(3,2,4,3);
     CrystalRegion r2_1 = new CrystalRegion(0,0,2,1);
@@ -198,23 +203,23 @@ class CrystalGridTest
     CrystalRegion r4_1 = new CrystalRegion(1,0,5,1);
     CrystalRegion r5_1 = new CrystalRegion(8,7,13,8);
 
-    assertEquals(CrystalGrid.scoreRegion(r1_1),CrystalGrid.scoreRegion(r1_2));
-    assertEquals(CrystalGrid.scoreRegion(r3_1),CrystalGrid.scoreRegion(r3_2));
+    assertEquals(regionScorer.scoreRegion(r1_1), regionScorer.scoreRegion(r1_2));
+    assertEquals(regionScorer.scoreRegion(r3_1), regionScorer.scoreRegion(r3_2));
 
-    assertEquals(0, CrystalGrid.scoreRegion(r1_1));
-    assertEquals(0, CrystalGrid.scoreRegion(r2_1));
+    assertEquals(0, regionScorer.scoreRegion(r1_1));
+    assertEquals(0, regionScorer.scoreRegion(r2_1));
 
-    assertTrue(CrystalGrid.scoreRegion(r4_1) > CrystalGrid.scoreRegion(r3_1));
-    assertTrue(CrystalGrid.scoreRegion(r5_1) > CrystalGrid.scoreRegion(r4_1));
+    assertTrue(regionScorer.scoreRegion(r4_1) > regionScorer.scoreRegion(r3_1));
+    assertTrue(regionScorer.scoreRegion(r5_1) > regionScorer.scoreRegion(r4_1));
 
-    assertTrue(CrystalGrid.scoreRegion(r4_1) > CrystalGrid.scoreRegion(r3_1) + CrystalGrid.scoreRegion(r3_2));
+    assertTrue(regionScorer.scoreRegion(r4_1) > regionScorer.scoreRegion(r3_1) + regionScorer.scoreRegion(r3_2));
   }
 
   @Test
   void shiftGrid()
   {
     CrystalGrid grid = setupTriggerGrid();
-    grid.triggerRegions();
+    grid.triggerRegions(new DefaultRegionFinder(), new DefaultRegionScorer());
     long emptyFields = Arrays.stream(grid.getField())
         .flatMap(Arrays::stream)
         .filter(Objects::isNull)
