@@ -2,19 +2,28 @@ package de.dhbw.swe.betterjeweled.core;
 
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.*;
 
 @Value
 public class CrystalRegion
 {
-
+  @Getter(AccessLevel.PRIVATE)
   Set<Position> positions;
 
-  public CrystalRegion(int startX, int startY, int endX, int endY) {
-    positions = new HashSet<>();
-    for (int i = startX; i < endX; i++) {
-      for (int j = startY; j < endY; j++) {
+  private CrystalRegion(Collection<Position> positions)
+  {
+    this.positions = new HashSet<>(positions);
+  }
+
+  public CrystalRegion(int startX, int startY, int endX, int endY)
+  {
+    this(Collections.emptySet());
+
+    for(int i = startX; i < endX; i++)
+    {
+      for(int j = startY; j < endY; j++)
+      {
         positions.add(new Position(i, j));
       }
     }
@@ -22,30 +31,39 @@ public class CrystalRegion
 
   public boolean contains(int posX, int posY)
   {
-    return positions.contains(new Position(posX, posY));
+    return getPositions().contains(new Position(posX, posY));
   }
 
   public int getSize()
   {
-    return positions.size();
+    return getPositions().size();
   }
 
-  public boolean intersects(CrystalRegion other) {
-    Set<Position> temp = new HashSet<>();
-    temp.addAll(positions);
-    temp.addAll(other.getPositions());
-    return temp.size() < (other.getSize() + this.getSize());
+  public boolean intersects(CrystalRegion other)
+  {
+    return getPositions().stream()
+        .anyMatch(other.getPositions()::contains);
   }
 
-  public void mergeWith(CrystalRegion other) {
-    positions.addAll(other.getPositions());
+  public static CrystalRegion merge(CrystalRegion... regions)
+  {
+    return merge(Arrays.asList(regions));
+  }
+
+  public static CrystalRegion merge(Collection<CrystalRegion> regions)
+  {
+    Set<Position> fields = regions.stream()
+        .map(CrystalRegion::getPositions)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
+
+    return new CrystalRegion(fields);
   }
 
   @Value
-  private class Position {
-
-    private int x;
-    private int y;
-
+  public static class Position
+  {
+    int x;
+    int y;
   }
 }

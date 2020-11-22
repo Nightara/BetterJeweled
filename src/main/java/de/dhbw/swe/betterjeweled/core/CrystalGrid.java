@@ -158,23 +158,25 @@ public class CrystalGrid
   public Map<Crystal, List<CrystalRegion>> findMergedRegions() {
     Map<Crystal, List<CrystalRegion>> regions = findRegions();
     Map<Crystal, List<CrystalRegion>> toReturn = new HashMap<>();
-    for (Crystal crystal :
-            regions.keySet()) {
+    for(Crystal crystal : regions.keySet())
+    {
       List<CrystalRegion> temp = regions.get(crystal);
-      List<CrystalRegion> temp2 = new ArrayList<>();
-      while (!temp.isEmpty()) {
-        for (int i = 1; i < temp.size(); i++) {
-          if (temp.get(0).intersects(temp.get(i))) {
-            temp.get(0).mergeWith(temp.get(i));
-            temp.remove(i);
-            i--;
+      for(int i = 0; i < temp.size(); i++)
+      {
+        CrystalRegion firstRegion = temp.get(i);
+        for(int j = temp.size() - 1; j > i; j--)
+        {
+          CrystalRegion secondRegion = temp.get(j);
+          if(firstRegion.intersects(secondRegion))
+          {
+            temp.set(i, CrystalRegion.merge(firstRegion, secondRegion));
+            temp.remove(secondRegion);
           }
         }
-        temp2.add(temp.get(0));
-        temp.remove(0);
       }
-      toReturn.put(crystal, temp2);
+      toReturn.put(crystal, temp);
     }
+
     return toReturn;
   }
 
