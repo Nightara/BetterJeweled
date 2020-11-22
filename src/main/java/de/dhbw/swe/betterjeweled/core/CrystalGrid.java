@@ -4,8 +4,6 @@ import lombok.*;
 
 import java.util.*;
 import java.util.List;
-import java.util.function.*;
-import java.util.stream.*;
 
 /**
  * The CrystalGrid class represents a rectangular grid of variable size containing any number of crystals within its
@@ -195,73 +193,9 @@ public class CrystalGrid
     setCrystal(posXTwo, posYTwo, crysOne.orElse(null));
   }
 
-  /**
-   * Detects all regions of at least MIN_COMBO_SIZE length sorted by crystal type and returns them as a map of lists.
-   *
-   * @return All regions in the current grid
-   */
-  public Map<Crystal, List<CrystalRegion>> findRegions()
+  protected int triggerRegions(Map<Crystal, List<CrystalRegion>> regions, RegionScorer scorer)
   {
-    return Arrays.stream(getColors()).collect(Collectors.toMap(Function.identity(), color ->
-    {
-      List<CrystalRegion> regions = new LinkedList<>();
-
-      Boolean[][] filteredGrid = Arrays.stream(getField())
-          .map(row -> Arrays.stream(row)
-              .map(crystal -> crystal != null && crystal.countsAs(color))
-              .toArray(Boolean[]::new))
-          .toArray(Boolean[][]::new);
-
-      // Search in X direction
-      for(int y = 0; y < getSizeY(); y++)
-      {
-        for(int startX = 0; startX <= getSizeX() - MIN_COMBO_SIZE; startX++)
-        {
-          int endX = startX;
-          while(endX < getSizeX() && filteredGrid[endX][y])
-          {
-            endX++;
-          }
-
-          if(endX - startX >= MIN_COMBO_SIZE)
-          {
-            regions.add(new CrystalRegion(startX, y, endX,y + 1));
-          }
-        }
-      }
-
-      // Search in Y direction
-      for(int x = 0; x < getSizeX(); x++)
-      {
-        for(int startY = 0; startY <= getSizeY() - MIN_COMBO_SIZE; startY++)
-        {
-          int endY = startY;
-          while(endY < getSizeY() && filteredGrid[x][endY])
-          {
-            endY++;
-          }
-
-          if(endY - startY >= MIN_COMBO_SIZE)
-          {
-            regions.add(new CrystalRegion(x, startY,x + 1, endY));
-          }
-        }
-      }
-
-      return regions;
-    }));
-  }
-
-  /**
-   * Detects all regions using CrystalGrid#findRegions and deleted all crystals contained within them, returning the
-   * total score for the creation of these regions according to CrystalGrid#scoreRegion. Crystals are deleted from left
-   * to right, then top to bottom.
-   *
-   * @return The total scores for the deleted regions
-   */
-  public int triggerRegions()
-  {
-    return findRegions().values().stream()
+    return regions.values().stream()
         .flatMap(List::stream)
         .mapToInt(region ->
         {
@@ -275,8 +209,20 @@ public class CrystalGrid
               }
             }
           }
-          return scoreRegion(region);
+          return scorer.scoreRegion(region);
         }).sum();
+  }
+
+  /**
+   * Detects all regions using CrystalGrid#findRegions and deleted all crystals contained within them, returning the
+   * total score for the creation of these regions according to CrystalGrid#scoreRegion. Crystals are deleted from left
+   * to right, then top to bottom.
+   *
+   * @return The total scores for the deleted regions
+   */
+  public int triggerRegions(RegionFinder finder, RegionScorer scorer)
+  {
+    return triggerRegions(finder.findRegions(this), scorer);
   }
 
   public void shiftCrystals()
@@ -296,31 +242,6 @@ public class CrystalGrid
           exchangeCrystals(x, y, x,y - shift);
         }
       }
-    }
-  }
-
-  /**
-   * Scores a supplied region. This method is expected to always fulfill the following requirements:<br />
-   * <ol>
-   *   <li>Regions shorter than MIN_COMBO_SIZE receive a score of zero.</li>
-   *   <li>Regions that can be converted into each other by movement, mirroring and / or rotation receive the same
-   *   score.</li>
-   *   <li>Regions of size x receive a higher score than two regions of size x - 1.</li>
-   * </ol>
-   *
-   * @param region The region to score
-   * @return A score for deleting the supplied region
-   */
-  public static int scoreRegion(CrystalRegion region)
-  {
-    if(region.getSize() < MIN_COMBO_SIZE)
-    {
-      return 0;
-    }
-    else
-    {
-      int scoreSize = 1 + region.getSize() - MIN_COMBO_SIZE;
-      return scoreSize * scoreSize * SCORE_BASE;
     }
   }
 }
