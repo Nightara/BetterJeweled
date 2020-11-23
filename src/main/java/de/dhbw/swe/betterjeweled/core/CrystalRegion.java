@@ -78,17 +78,33 @@ public class CrystalRegion
     return getPositions().size();
   }
 
+  /**
+   * Returns whether or not two CrystalRegions intersect (e.g. both of them contain the same field(s) on the grid).
+   *
+   * @param other The second CrystalRegion to test
+   * @return whether two regions intersect
+   */
   public boolean intersects(CrystalRegion other)
   {
     return getPositions().stream()
         .anyMatch(other.getPositions()::contains);
   }
 
+  /**
+   * This method takes two or more CrystalRegions and merges them, returning a new Region composed of the merged ones.
+   * @param regions An array of CrystalRegions to merge
+   * @return the merged CrystalRegion
+   */
   public static CrystalRegion merge(CrystalRegion... regions)
   {
     return merge(Arrays.asList(regions));
   }
 
+  /**
+   * This method takes two or more CrystalRegions and merges them, returning a new Region composed of the merged ones.
+   * @param regions A Collection of CrystalRegions to merge
+   * @return the merged CrystalRegion
+   */
   public static CrystalRegion merge(Collection<CrystalRegion> regions)
   {
     Set<Position> fields = regions.stream()
@@ -99,6 +115,9 @@ public class CrystalRegion
     return new CrystalRegion(fields);
   }
 
+  /**
+   * An internal class for representing positions on the CrystalGrid. It's simply a data holder for an (x,y) Position.
+   */
   @Value
   public static class Position
   {
