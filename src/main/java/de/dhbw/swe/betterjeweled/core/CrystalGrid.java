@@ -181,7 +181,7 @@ public class CrystalGrid
   }
 
   /**
-   *
+   * Swaps the positions of two crystals, or a crystal and an empty field.
    * @throws IndexOutOfBoundsException if the supplied coordinates are outside of the grid.
    */
   private void exchangeCrystals(int posXOne, int posYOne, int posXTwo, int posYTwo)
@@ -225,6 +225,10 @@ public class CrystalGrid
     return triggerRegions(finder.findRegions(this), scorer);
   }
 
+  /**
+   * Implements the "gravity" portion of the CrystalGrid - e.g. after all combos are removed from the grid, it shifts
+   * all crystals to the lowermost position available.
+   */
   public void shiftCrystals()
   {
     for(int x = 0; x < getSizeX(); x++)
