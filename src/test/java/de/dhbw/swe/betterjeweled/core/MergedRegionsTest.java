@@ -65,24 +65,18 @@ public class MergedRegionsTest {
 
     private CrystalGrid triggerGridWithOverlap()
     {
-        CrystalGrid grid = new CrystalGrid(5, 5, RED, GREEN, BLUE);
+        CrystalGrid grid = new CrystalGrid(3, 3, RED, GREEN, BLUE);
         grid.setCrystal(0,0, RED);
         grid.setCrystal(0,1, RED);
         grid.setCrystal(0,2, RED);
-        grid.setCrystal(0,3, GREEN);
-        grid.setCrystal(0,4, GREEN);
 
         grid.setCrystal(1,0, RED);
         grid.setCrystal(1,1, BLUE);
         grid.setCrystal(1,2, GREEN);
-        grid.setCrystal(1,3, BLUE);
-        grid.setCrystal(1,4, GREEN);
 
         grid.setCrystal(2,0, RED);
         grid.setCrystal(2,1, RED);
         grid.setCrystal(2,2, RED);
-        grid.setCrystal(2,3, RED);
-        grid.setCrystal(2,4, GREEN);
 
         return grid;
     }

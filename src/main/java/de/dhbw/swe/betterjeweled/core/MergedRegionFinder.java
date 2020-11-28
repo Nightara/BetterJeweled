@@ -29,6 +29,7 @@ public class MergedRegionFinder implements RegionFinder
           if(firstRegion.intersects(secondRegion))
           {
             temp.set(i, CrystalRegion.merge(firstRegion, secondRegion));
+            firstRegion = temp.get(i);
             temp.remove(secondRegion);
           }
         }
