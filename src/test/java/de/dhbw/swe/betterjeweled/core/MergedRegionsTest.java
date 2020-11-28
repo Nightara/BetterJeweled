@@ -3,6 +3,8 @@ package de.dhbw.swe.betterjeweled.core;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,5 +61,50 @@ public class MergedRegionsTest {
         region3 = CrystalRegion.merge(region3, region4);
 
         assertTrue(region1.intersects(region3));
+    }
+
+    private CrystalGrid triggerGridWithOverlap()
+    {
+        CrystalGrid grid = new CrystalGrid(5, 5, RED, GREEN, BLUE);
+        grid.setCrystal(0,0, RED);
+        grid.setCrystal(0,1, RED);
+        grid.setCrystal(0,2, RED);
+        grid.setCrystal(0,3, GREEN);
+        grid.setCrystal(0,4, GREEN);
+
+        grid.setCrystal(1,0, RED);
+        grid.setCrystal(1,1, BLUE);
+        grid.setCrystal(1,2, GREEN);
+        grid.setCrystal(1,3, BLUE);
+        grid.setCrystal(1,4, GREEN);
+
+        grid.setCrystal(2,0, RED);
+        grid.setCrystal(2,1, RED);
+        grid.setCrystal(2,2, RED);
+        grid.setCrystal(2,3, RED);
+        grid.setCrystal(2,4, GREEN);
+
+        return grid;
+    }
+
+    /**
+     * Chain overlaps refer to, for example,
+     * Region 1 overlaps with region 2, and region 2 overlaps with region 3.
+     * These Regions should merge into one.
+     */
+    @Test
+    void testMergingChainOverlaps() {
+        DefaultRegionFinder finder = new DefaultRegionFinder();
+
+        MergedRegionFinder mergeFinder = new MergedRegionFinder(finder);
+
+        Map<Crystal, List<CrystalRegion>> regions = mergeFinder.findRegions(triggerGridWithOverlap(), new Crystal(Color.RED));
+        assertEquals(1, regions.size());
+
+        List<CrystalRegion> redRegions = regions.get(new Crystal(Color.RED));
+        assertEquals(1, redRegions.size());
+
+        CrystalRegion mergedRegion = redRegions.get(0);
+        assertEquals(7, mergedRegion.getSize());
     }
 }
