@@ -1,9 +1,12 @@
 package de.dhbw.swe.betterjeweled.core;
 
 import lombok.*;
+import lombok.experimental.NonFinal;
+
 import java.util.*;
 
 @Value
+@NonFinal
 public class MergedRegionFinder implements RegionFinder
 {
   @Getter(AccessLevel.PRIVATE)
