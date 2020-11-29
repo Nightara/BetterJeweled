@@ -74,10 +74,12 @@ public class CrystalGrid
    */
   public CrystalGrid(int sizeX, int sizeY, int seed, Crystal... colors)
   {
-    if(sizeX < MIN_COMBO_SIZE) {
+    if(sizeX < MIN_COMBO_SIZE)
+    {
       throw new IllegalArgumentException("X size cannot be less than " + MIN_COMBO_SIZE + " but was " + sizeX);
     }
-    if(sizeY < MIN_COMBO_SIZE) {
+    if(sizeY < MIN_COMBO_SIZE)
+    {
       throw new IllegalArgumentException("Y size cannot be less than " + MIN_COMBO_SIZE + " but was " + sizeY);
     }
 
