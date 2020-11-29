@@ -24,7 +24,7 @@ class CrystalGridTest
     CrystalGrid grid = new CrystalGrid(sizeX, sizeY);
 
     assertEquals(size, grid.getSize());
-    assertTrue(Arrays.stream(grid.getField())
+    assertTrue(Arrays.stream(grid.viewField())
         .flatMap(Arrays::stream)
         .allMatch(Objects::isNull));
   }
@@ -38,7 +38,7 @@ class CrystalGridTest
     CrystalGrid grid = new CrystalGrid(sizeX, sizeY, RED, GREEN, BLUE);
 
     assertEquals(size, grid.fillGrid());
-    assertTrue(Arrays.stream(grid.getField())
+    assertTrue(Arrays.stream(grid.viewField())
         .flatMap(Arrays::stream)
         .noneMatch(Objects::isNull));
   }
@@ -233,13 +233,13 @@ class CrystalGridTest
   {
     CrystalGrid grid = setupTriggerGrid();
     grid.triggerRegions(new DefaultRegionFinder(), new DefaultRegionScorer());
-    long expectedRefill = grid.getSize() - Arrays.stream(grid.getField())
+    long expectedRefill = grid.getSize() - Arrays.stream(grid.viewField())
         .flatMap(Arrays::stream)
         .filter(Objects::nonNull)
         .count();
 
     assertEquals(expectedRefill, grid.fillGrid());
-    assertTrue(Arrays.stream(grid.getField())
+    assertTrue(Arrays.stream(grid.viewField())
         .flatMap(Arrays::stream)
         .noneMatch(Objects::isNull));
   }
@@ -274,14 +274,14 @@ class CrystalGridTest
   {
     CrystalGrid grid = setupTriggerGrid();
     grid.triggerRegions(new DefaultRegionFinder(), new DefaultRegionScorer());
-    long emptyFields = Arrays.stream(grid.getField())
+    long emptyFields = Arrays.stream(grid.viewField())
         .flatMap(Arrays::stream)
         .filter(Objects::isNull)
         .count();
 
     grid.shiftCrystals();
 
-    assertEquals(emptyFields, Arrays.stream(grid.getField())
+    assertEquals(emptyFields, Arrays.stream(grid.viewField())
         .flatMap(Arrays::stream)
         .filter(Objects::isNull)
         .count());

@@ -43,6 +43,7 @@ public class CrystalGrid
   int sizeX;
   int sizeY;
   Crystal[] colors;
+  @Getter(AccessLevel.PRIVATE)
   Crystal[][] field;
   
   @EqualsAndHashCode.Exclude
@@ -154,6 +155,26 @@ public class CrystalGrid
     }
 
     return generated;
+  }
+
+  /**
+   * Generates and returns a read-only copy of the field data, formatted as a 2D array.
+   * The X coordinate translates into the first dimension, the Y coordinate into the second dimension of the array.
+   *
+   * @return A copy of the internal grid
+   */
+  public Crystal[][] viewField()
+  {
+    Crystal[][] grid = new Crystal[getSizeX()][getSizeY()];
+    for(int x = 0; x < getSizeX(); x++)
+    {
+      for(int y = 0; y < getSizeY(); y++)
+      {
+        grid[x][y] = getCrystal(x, y).orElse(null);
+      }
+    }
+
+    return grid;
   }
 
   /**
