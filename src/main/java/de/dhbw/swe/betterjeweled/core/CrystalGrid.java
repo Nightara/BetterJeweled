@@ -162,6 +162,21 @@ public class CrystalGrid
    * adjacent to each other is considered to be a "change" of the grid, even if the two targeted fields contain the same
    * type of crystal (Or null).
    *
+   * @param move The move object representing the move to be done.
+   * @return True if the request resulted in a change of the grid, false otherwise
+   * @throws IndexOutOfBoundsException if the supplied coordinates are outside of the grid.
+   */
+  public boolean switchCrystals(Move move)
+  {
+    return switchCrystals(move.getX1(), move.getY1(), move.getX2(), move.getY2());
+  }
+
+  /**
+   * Switches two adjacent fields, returning true if the requested action resulted in a change of the grid, and false
+   * otherwise. Any switch request that is within bounds of the grid and targets two fields that are orthogonally
+   * adjacent to each other is considered to be a "change" of the grid, even if the two targeted fields contain the same
+   * type of crystal (Or null).
+   *
    * @param posXOne The x (Horizontal) coordinate of the first crystal
    * @param posYOne The y (Vertical) coordinate of the first crystal
    * @param posXTwo The x (Horizontal) coordinate of the second crystal
