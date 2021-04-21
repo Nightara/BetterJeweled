@@ -1,7 +1,15 @@
 package de.dhbw.swe.betterjeweled.core;
 
-public interface Player {
+import com.google.common.eventbus.*;
 
-    Move getMove();
-    void pushChanges(Crystal[][] grid, ModifierType type, int score);
+public interface Player
+{
+  CrystalChangeEvent getNextMove();
+  void pushChanges(CrystalChangeEvent changeEvent);
+
+  @Subscribe
+  default void acceptMove(CrystalChangeEvent changeEvent)
+  {
+    pushChanges(changeEvent);
+  }
 }

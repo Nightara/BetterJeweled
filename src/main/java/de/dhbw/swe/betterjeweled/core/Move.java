@@ -1,10 +1,12 @@
 package de.dhbw.swe.betterjeweled.core;
 
-import lombok.Value;
+import lombok.*;
 
 @Value
-public class Move {
-
-    int x1, y1, x2, y2;
-
+public class Move
+{
+  int x1;
+  int y1;
+  int x2;
+  int y2;
 }
