@@ -43,6 +43,7 @@ public class CrystalGrid
   int sizeX;
   int sizeY;
   Crystal[] colors;
+  @Getter(AccessLevel.PRIVATE)
   Crystal[][] field;
   
   @EqualsAndHashCode.Exclude
@@ -73,10 +74,12 @@ public class CrystalGrid
    */
   public CrystalGrid(int sizeX, int sizeY, int seed, Crystal... colors)
   {
-    if(sizeX < MIN_COMBO_SIZE) {
+    if(sizeX < MIN_COMBO_SIZE)
+    {
       throw new IllegalArgumentException("X size cannot be less than " + MIN_COMBO_SIZE + " but was " + sizeX);
     }
-    if(sizeY < MIN_COMBO_SIZE) {
+    if(sizeY < MIN_COMBO_SIZE)
+    {
       throw new IllegalArgumentException("Y size cannot be less than " + MIN_COMBO_SIZE + " but was " + sizeY);
     }
 
@@ -157,6 +160,26 @@ public class CrystalGrid
   }
 
   /**
+   * Generates and returns a read-only copy of the field data, formatted as a 2D array.
+   * The X coordinate translates into the first dimension, the Y coordinate into the second dimension of the array.
+   *
+   * @return A copy of the internal grid
+   */
+  public Crystal[][] viewField()
+  {
+    Crystal[][] grid = new Crystal[getSizeX()][getSizeY()];
+    for(int x = 0; x < getSizeX(); x++)
+    {
+      for(int y = 0; y < getSizeY(); y++)
+      {
+        grid[x][y] = getCrystal(x, y).orElse(null);
+      }
+    }
+
+    return grid;
+  }
+
+  /**
    * Switches two adjacent fields, returning true if the requested action resulted in a change of the grid, and false
    * otherwise. Any switch request that is within bounds of the grid and targets two fields that are orthogonally
    * adjacent to each other is considered to be a "change" of the grid, even if the two targeted fields contain the same
@@ -196,7 +219,7 @@ public class CrystalGrid
   }
 
   /**
-   *
+   * Swaps the positions of two crystals, or a crystal and an empty field.
    * @throws IndexOutOfBoundsException if the supplied coordinates are outside of the grid.
    */
   private void exchangeCrystals(int posXOne, int posYOne, int posXTwo, int posYTwo)
@@ -240,6 +263,10 @@ public class CrystalGrid
     return triggerRegions(finder.findRegions(this), scorer);
   }
 
+  /**
+   * Implements the "gravity" portion of the CrystalGrid - e.g. after all combos are removed from the grid, it shifts
+   * all crystals to the lowermost position available.
+   */
   public void shiftCrystals()
   {
     for(int x = 0; x < getSizeX(); x++)
