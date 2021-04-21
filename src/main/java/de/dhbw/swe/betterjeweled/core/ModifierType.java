@@ -2,5 +2,5 @@ package de.dhbw.swe.betterjeweled.core;
 
 public enum ModifierType
 {
-  MOVE
+  MOVE, TRIGGER, SHIFT, FILL
 }

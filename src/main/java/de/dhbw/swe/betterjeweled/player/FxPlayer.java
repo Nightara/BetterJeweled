@@ -49,7 +49,7 @@ public class FxPlayer implements Initializable, Player
 
   @Override
   @SneakyThrows
-  public void pushChanges(CrystalChangeEvent changeEvent)
+  public void pushChanges(CrystalEvent changeEvent)
   {
     CountDownLatch finished = new CountDownLatch(1);
     Platform.runLater(() ->
@@ -63,7 +63,7 @@ public class FxPlayer implements Initializable, Player
         }
       }
 
-      scoreBoard.setText("Current score: " + changeEvent.getUpdatedScore());
+      scoreBoard.setText("Current score: " + changeEvent.getScoreDelta());
       finished.countDown();
     });
 

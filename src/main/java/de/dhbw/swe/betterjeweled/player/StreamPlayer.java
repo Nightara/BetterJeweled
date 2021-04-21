@@ -36,10 +36,10 @@ public class StreamPlayer implements Player
 
   @Override
   @SneakyThrows
-  public void pushChanges(CrystalChangeEvent changeEvent)
+  public void pushChanges(CrystalEvent changeEvent)
   {
     setGrid(changeEvent.getUpdatedGrid());
-    setScore(changeEvent.getUpdatedScore());
+    setScore(changeEvent.getScoreDelta());
 
     getOut().write(renderGrid().getBytes());
     getOut().flush();

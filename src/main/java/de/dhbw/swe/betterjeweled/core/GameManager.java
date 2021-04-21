@@ -2,34 +2,34 @@ package de.dhbw.swe.betterjeweled.core;
 
 import com.google.common.eventbus.*;
 import lombok.*;
-import lombok.experimental.*;
+
+import java.util.*;
 
 @Value
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor(access=AccessLevel.PRIVATE)
 public class GameManager
 {
-  EventBus bus;
+  EventBus eventBus;
   CrystalGrid grid;
-  Player playerOne;
-  Player playerTwo;
   RegionFinder finder;
   RegionScorer scorer;
+  PlayerRotator rotator;
+  MoveExecutor executor;
+  List<Player> players;
 
-  @Setter
-  @NonFinal
-  Player nextPlayer;
-
-  private GameManager(CrystalGrid grid, RegionFinder finder, RegionScorer scorer, Player playerOne, Player playerTwo)
+  public GameManager(CrystalGrid grid, RegionFinder finder, RegionScorer scorer, PlayerRotator rotator,
+                     MoveExecutor executor, Player... players)
   {
-    this(new EventBus(), grid, playerOne, playerTwo, finder, scorer, playerOne);
-    this.bus.register(playerOne);
-    this.bus.register(playerTwo);
+    this(new EventBus(), grid, finder, scorer, rotator, executor, Arrays.asList(players));
+    Arrays.stream(players).forEach(this.eventBus::register);
   }
 
-  private void runGameCycle()
+  // TODO: Use event bus to poll moves, not blocking operations
+  protected void runGameCycle()
   {
-    getBus().post(getNextPlayer().getNextMove());
-    setNextPlayer(getNextPlayer() == getPlayerOne() ? getPlayerTwo() : getPlayerOne());
+    List<CrystalEvent> events = getExecutor().executeMove(getGrid(),getFinder(),getScorer(),
+        getRotator().apply(getPlayers()).getNextMove());
+    events.forEach(getEventBus()::post);
   }
 }

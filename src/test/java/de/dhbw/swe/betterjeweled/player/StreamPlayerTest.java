@@ -57,7 +57,7 @@ class StreamPlayerTest
     StreamPlayer player = new StreamPlayer(in, out);
     new Thread(player).start();
 
-    player.pushChanges(new CrystalChangeEvent(0,100, grid, grid, ModifierType.MOVE));
+    player.pushChanges(new CrystalEvent.Trigger(100, grid, grid));
     String[] data = out.toString(StandardCharsets.UTF_8).split("\n");
     Assertions.assertEquals(2 * grid.length + 1, data[0].length());
     Assertions.assertEquals(2 * grid[0].length + 1, data.length);
