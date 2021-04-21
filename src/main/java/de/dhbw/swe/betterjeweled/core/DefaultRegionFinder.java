@@ -25,7 +25,7 @@ public class DefaultRegionFinder implements RegionFinder
     {
       List<CrystalRegion> regions = new LinkedList<>();
 
-      Boolean[][] filteredGrid = Arrays.stream(grid.getField())
+      Boolean[][] filteredGrid = Arrays.stream(grid.viewField())
           .map(row -> Arrays.stream(row)
               .map(crystal -> crystal != null && crystal.countsAs(color))
               .toArray(Boolean[]::new))

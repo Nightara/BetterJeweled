@@ -2,9 +2,9 @@ package de.dhbw.swe.betterjeweled.core;
 
 import com.google.common.eventbus.*;
 
-public interface Player
+public interface Player extends Runnable
 {
-  CrystalChangeEvent getNextMove();
+  Move getNextMove();
   void pushChanges(CrystalChangeEvent changeEvent);
 
   @Subscribe

@@ -12,6 +12,13 @@ public class MergedRegionFinder implements RegionFinder
   @Getter(AccessLevel.PRIVATE)
   RegionFinder regionFinder;
 
+  /**
+   * This method takes regions found by another region finder (usually the default one) and merges the overlapping ones.
+   *
+   * @param grid The grid to look through
+   * @param crystals The crystal types to look for
+   * @return a map of merged CrystalRegions for each color of crystals.
+   */
   @Override
   public Map<Crystal, List<CrystalRegion>> findRegions(CrystalGrid grid, Collection<Crystal> crystals)
   {
