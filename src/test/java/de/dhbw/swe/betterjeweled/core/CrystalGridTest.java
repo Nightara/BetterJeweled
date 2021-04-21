@@ -72,143 +72,105 @@ class CrystalGridTest
   {
     int sizeX = 3;
     int sizeY = 5;
-    int posXOne = 0;
-    int posYOne = 0;
-    int posXTwo = 0;
-    int posYTwo = 1;
+    int posXOne = 2;
+    int posYOne = 1;
     CrystalGrid grid = new CrystalGrid(sizeX, sizeY, RED, GREEN, BLUE);
     grid.fillGrid();
 
-    Optional<Crystal> crysOne = grid.getCrystal(posXOne, posYOne);
-    Optional<Crystal> crysTwo = grid.getCrystal(posXTwo, posYTwo);
-    assertTrue(grid.switchCrystals(posXOne, posYOne, posXTwo, posYTwo));
+    for(int posXTwo = 0; posXTwo < sizeX; posXTwo++)
+    {
+      for(int posYTwo = 0; posYTwo < sizeY; posYTwo++)
+      {
+        Optional<Crystal> crysOne = grid.getCrystal(posXOne, posYOne);
+        Optional<Crystal> crysTwo = grid.getCrystal(posXTwo, posYTwo);
 
-    assertEquals(crysTwo, grid.getCrystal(posXOne, posYOne));
-    assertEquals(crysOne, grid.getCrystal(posXTwo, posYTwo));
+        if(Math.abs(posXTwo - posXOne) + Math.abs(posYTwo - posYOne) == 1
+            && crysOne.isPresent()
+            && crysTwo.isPresent())
+        {
+          assertTrue(grid.switchCrystals(posXOne, posYOne, posXTwo, posYTwo));
+
+          assertEquals(crysTwo, grid.getCrystal(posXOne, posYOne));
+          assertEquals(crysOne, grid.getCrystal(posXTwo, posYTwo));
+        }
+      }
+    }
   }
 
   @Test
   void dontSwitchRemoteCrystals()
   {
-    CrystalGrid grid = new CrystalGrid(3, 5, RED, GREEN, BLUE);
+    int sizeX = 3;
+    int sizeY = 5;
+    int posXOne = 2;
+    int posYOne = 1;
+    CrystalGrid grid = new CrystalGrid(sizeX, sizeY, RED, GREEN, BLUE);
     grid.fillGrid();
 
-    assertFalse(grid.switchCrystals(0,0,0,2));
-    assertFalse(grid.switchCrystals(0,0,2,0));
-    assertFalse(grid.switchCrystals(0,0,2,2));
+    for(int posXTwo = 0; posXTwo < sizeX; posXTwo++)
+    {
+      for(int posYTwo = 0; posYTwo < sizeY; posYTwo++)
+      {
+        Optional<Crystal> crysOne = grid.getCrystal(posXOne, posYOne);
+        Optional<Crystal> crysTwo = grid.getCrystal(posXTwo, posYTwo);
+
+        if(Math.abs(posXTwo - posXOne) + Math.abs(posYTwo - posYOne) > 1
+            && crysOne.isPresent()
+            && crysTwo.isPresent())
+        {
+          assertFalse(grid.switchCrystals(posXOne, posYOne, posXTwo, posYTwo));
+
+          assertEquals(crysOne, grid.getCrystal(posXOne, posYOne));
+          assertEquals(crysTwo, grid.getCrystal(posXTwo, posYTwo));
+        }
+      }
+    }
   }
 
   @Test
   void dontSwitchCrystalWithItself()
   {
-    CrystalGrid grid = new CrystalGrid(3, 5, RED, GREEN, BLUE);
+    int sizeX = 3;
+    int sizeY = 5;
+    CrystalGrid grid = new CrystalGrid(sizeX, sizeY, RED, GREEN, BLUE);
     grid.fillGrid();
 
-    assertFalse(grid.switchCrystals(0,0,0,0));
+    for(int posX = 0; posX < sizeX; posX++)
+    {
+      for(int posY = 0; posY < sizeY; posY++)
+      {
+        Optional<Crystal> crystal = grid.getCrystal(posX, posY);
+
+        assertFalse(grid.switchCrystals(posX, posY, posX, posY));
+
+        assertEquals(crystal, grid.getCrystal(posX, posY));
+        assertEquals(crystal, grid.getCrystal(posX, posY));
+      }
+    }
   }
 
-  private CrystalGrid setupTriggerGrid()
+  private static Map<Crystal, List<CrystalRegion>> generateTriggerRegions()
   {
-    CrystalGrid grid = new CrystalGrid(4, 5, RED, GREEN, BLUE);
-    grid.setCrystal(0,0, RED);
-    grid.setCrystal(0,1, RED);
-    grid.setCrystal(0,2, RED);
-    grid.setCrystal(0,3, GREEN);
-    grid.setCrystal(0,4, GREEN);
+    Map<Crystal, List<CrystalRegion>> regions = new HashMap<>();
+    regions.put(RED, new LinkedList<>());
+    regions.get(RED).add(new CrystalRegion(0,1,1,1));
+    regions.get(RED).add(new CrystalRegion(0,2,2,4));
 
-    grid.setCrystal(1,0, RED);
-    grid.setCrystal(1,1, BLUE);
-    grid.setCrystal(1,2, BLUE);
-    grid.setCrystal(1,3, BLUE);
-    grid.setCrystal(1,4, GREEN);
-
-    grid.setCrystal(2,0, GREEN);
-    grid.setCrystal(2,1, BLUE);
-    grid.setCrystal(2,2, RED);
-    grid.setCrystal(2,3, RED);
-    grid.setCrystal(2,4, GREEN);
-
-    grid.setCrystal(3,0, RED);
-    grid.setCrystal(3,1, RED);
-    grid.setCrystal(3,2, RED);
-    grid.setCrystal(3,3, RED);
-    grid.setCrystal(3,4, RED);
-
-    return grid;
-  }
-
-  private CrystalGrid triggerGridWithOverlap()
-  {
-    CrystalGrid grid = new CrystalGrid(5, 5, RED, GREEN, BLUE);
-    grid.setCrystal(0,0, RED);
-    grid.setCrystal(0,1, RED);
-    grid.setCrystal(0,2, RED);
-    grid.setCrystal(0,3, GREEN);
-    grid.setCrystal(0,4, GREEN);
-
-    grid.setCrystal(1,0, RED);
-    grid.setCrystal(1,1, BLUE);
-    grid.setCrystal(1,2, BLUE);
-    grid.setCrystal(1,3, BLUE);
-    grid.setCrystal(1,4, GREEN);
-
-    grid.setCrystal(2,0, RED);
-    grid.setCrystal(2,1, BLUE);
-    grid.setCrystal(2,2, RED);
-    grid.setCrystal(2,3, RED);
-    grid.setCrystal(2,4, GREEN);
-
-    grid.setCrystal(3,0, GREEN);
-    grid.setCrystal(3,1, RED);
-    grid.setCrystal(3,2, BLUE);
-    grid.setCrystal(3,3, BLUE);
-    grid.setCrystal(3,4, RED);
-
-    grid.setCrystal(4,0, RED);
-    grid.setCrystal(4,1, RED);
-    grid.setCrystal(4,2, RED);
-    grid.setCrystal(4,3, RED);
-    grid.setCrystal(4,4, RED);
-
-    return grid;
-  }
-
-  @Test
-  void findDefaultRegions()
-  {
-    CrystalGrid grid = setupTriggerGrid();
-    RegionFinder regionFinder = new DefaultRegionFinder();
-
-    Map<Crystal, List<CrystalRegion>> regions = regionFinder.findRegions(grid, grid.getColors());
-
-    assertEquals(3, regions.keySet().size());
-    assertEquals(2, regions.get(RED).size());
-    assertEquals(1, regions.get(GREEN).size());
-    assertEquals(1, regions.get(BLUE).size());
-  }
-
-  @Test
-  void findRegionsWithMerging() {
-    CrystalGrid grid = triggerGridWithOverlap();
-
-    Map<Crystal, List<CrystalRegion>> regions = new MergedRegionFinder(new DefaultRegionFinder()).findRegions(grid);
-
-    assertEquals(3, regions.keySet().size());
-    assertEquals(2, regions.get(RED).size());
-    assertEquals(1, regions.get(GREEN).size());
-    assertEquals(1, regions.get(BLUE).size());
+    return regions;
   }
 
   @Test
   void triggerRegions()
   {
-    CrystalGrid originalGrid = setupTriggerGrid();
-    CrystalGrid grid = setupTriggerGrid();
-    RegionFinder regionFinder = new DefaultRegionFinder();
-    RegionScorer regionScorer = new DefaultRegionScorer();
-    Map<Crystal, List<CrystalRegion>> regions = regionFinder.findRegions(grid);
+    int sizeX = 3;
+    int sizeY = 5;
+    int seed = new Random().nextInt();
+    CrystalGrid grid = new CrystalGrid(sizeX, sizeY, seed, RED, GREEN, BLUE);
+    CrystalGrid originalGrid = new CrystalGrid(sizeX, sizeY, seed, RED, GREEN, BLUE);
+    RegionScorer regionScorer = CrystalRegion::getSize;
+    RegionFinder regionFinder = (grid1, crystals) -> generateTriggerRegions();
 
-    assertTrue(grid.triggerRegions(regions, regionScorer) > 0);
+    assertTrue(grid.triggerRegions(regionFinder, regionScorer) > 0);
 
     for(int x = 0; x < grid.getSizeX(); x++)
     {
@@ -216,14 +178,13 @@ class CrystalGridTest
       {
         int finalX = x;
         int finalY = y;
-        boolean shouldBePresent = originalGrid.getCrystal(x, y)
-            .map(crystal -> regions.get(crystal).stream()
-                .noneMatch(region -> region.contains(finalX, finalY)))
-            .orElse(false);
+        boolean shouldBePresent = generateTriggerRegions().values().stream()
+            .flatMap(Collection::stream)
+            .noneMatch(region -> region.contains(finalX, finalY));
+        Optional<Crystal> expected = originalGrid.getCrystal(x, y).filter(c -> shouldBePresent);
 
-        assertEquals(shouldBePresent, grid.getCrystal(x, y).isPresent(),
-            "[" + x + ", " + y + "] should be " + (shouldBePresent ? originalGrid.getCrystal(x, y) : "Optional.empty")
-                + " but was " + grid.getCrystal(x, y));
+        assertEquals(originalGrid.getCrystal(x, y).filter(c -> shouldBePresent), grid.getCrystal(x, y),
+            "[" + x + ", " + y + "] should be " + expected + " but was " + grid.getCrystal(x, y));
       }
     }
   }
@@ -231,8 +192,13 @@ class CrystalGridTest
   @Test
   void partialRefill()
   {
-    CrystalGrid grid = setupTriggerGrid();
-    grid.triggerRegions(new DefaultRegionFinder(), new DefaultRegionScorer());
+    int sizeX = 3;
+    int sizeY = 5;
+    CrystalGrid grid = new CrystalGrid(sizeX, sizeY, RED, GREEN, BLUE);
+    RegionScorer regionScorer = CrystalRegion::getSize;
+    RegionFinder regionFinder = (grid1, crystals) -> generateTriggerRegions();
+
+    grid.triggerRegions(regionFinder, regionScorer);
     long expectedRefill = grid.getSize() - Arrays.stream(grid.getField())
         .flatMap(Arrays::stream)
         .filter(Objects::nonNull)
@@ -245,35 +211,16 @@ class CrystalGridTest
   }
 
   @Test
-  void scoreRegion()
-  {
-    RegionScorer regionScorer = new DefaultRegionScorer();
-
-    CrystalRegion r1_1 = new CrystalRegion(0,0,1,1);
-    CrystalRegion r1_2 = new CrystalRegion(3,2,4,3);
-    CrystalRegion r2_1 = new CrystalRegion(0,0,2,1);
-    CrystalRegion r3_1 = new CrystalRegion(3,2,6,3);
-    CrystalRegion r3_2 = new CrystalRegion(3,2,4,5);
-    CrystalRegion r4_1 = new CrystalRegion(1,0,5,1);
-    CrystalRegion r5_1 = new CrystalRegion(8,7,13,8);
-
-    assertEquals(regionScorer.scoreRegion(r1_1), regionScorer.scoreRegion(r1_2));
-    assertEquals(regionScorer.scoreRegion(r3_1), regionScorer.scoreRegion(r3_2));
-
-    assertEquals(0, regionScorer.scoreRegion(r1_1));
-    assertEquals(0, regionScorer.scoreRegion(r2_1));
-
-    assertTrue(regionScorer.scoreRegion(r4_1) > regionScorer.scoreRegion(r3_1));
-    assertTrue(regionScorer.scoreRegion(r5_1) > regionScorer.scoreRegion(r4_1));
-
-    assertTrue(regionScorer.scoreRegion(r4_1) > regionScorer.scoreRegion(r3_1) + regionScorer.scoreRegion(r3_2));
-  }
-
-  @Test
   void shiftGrid()
   {
-    CrystalGrid grid = setupTriggerGrid();
-    grid.triggerRegions(new DefaultRegionFinder(), new DefaultRegionScorer());
+    int sizeX = 3;
+    int sizeY = 5;
+    CrystalGrid grid = new CrystalGrid(sizeX, sizeY, RED, GREEN, BLUE);
+
+    RegionScorer regionScorer = CrystalRegion::getSize;
+    RegionFinder regionFinder = (grid1, crystals) -> generateTriggerRegions();
+
+    grid.triggerRegions(regionFinder, regionScorer);
     long emptyFields = Arrays.stream(grid.getField())
         .flatMap(Arrays::stream)
         .filter(Objects::isNull)
@@ -290,7 +237,7 @@ class CrystalGridTest
     {
       for(int y = 0; y < grid.getSizeY() - 1; y++)
       {
-        // [x, y + 1] is empty => [x, y] is empty
+        // Condition tested: [x, y + 1] is empty => [x, y] is empty
         assertTrue(grid.getCrystal(x,y + 1).isPresent() || grid.getCrystal(x, y).isEmpty(),
             "[" + x + ", " + (y + 1) + "] is empty, but [" + x + ", " + y + "] isn't.");
       }
