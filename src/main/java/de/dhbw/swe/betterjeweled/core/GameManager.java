@@ -8,6 +8,7 @@ import java.util.*;
 
 @Value
 @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
+@SuppressWarnings("UnstableApiUsage")
 public class GameManager
 {
   EventBus eventBus;
@@ -23,6 +24,7 @@ public class GameManager
   @Setter(AccessLevel.PRIVATE)
   boolean listening = false;
 
+  @SuppressWarnings("java:S2234")
   public GameManager(CrystalGrid grid, RegionFinder finder, RegionScorer scorer, PlayerRotator rotator,
                      MoveExecutor executor, Player... players)
   {

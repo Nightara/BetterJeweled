@@ -72,4 +72,26 @@ class DefaultRegionFinderTest
     Assertions.assertEquals(1, regions.get(GREEN).size());
     Assertions.assertEquals(1, regions.get(BLUE).size());
   }
+
+  @Test
+  void testTransposeGrid()
+  {
+    Boolean[][] grid = new Boolean[][]
+        {
+            new Boolean[]{true, false, true, false},
+            new Boolean[]{false, true, false, true},
+            new Boolean[]{true, true, false, false},
+        };
+    Boolean[][] transposed = new Boolean[][]
+        {
+            new Boolean[]{true, false, true},
+            new Boolean[]{false, true, true},
+            new Boolean[]{true, false, false},
+            new Boolean[]{false, true, false},
+        };
+
+    Assertions.assertArrayEquals(transposed, DefaultRegionFinder.transposeGrid(grid));
+    Assertions.assertArrayEquals(grid, DefaultRegionFinder.transposeGrid(transposed));
+    Assertions.assertArrayEquals(grid, DefaultRegionFinder.transposeGrid(DefaultRegionFinder.transposeGrid(grid)));
+  }
 }

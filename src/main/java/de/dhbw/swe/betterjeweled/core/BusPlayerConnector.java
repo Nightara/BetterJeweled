@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.*;
 
 @Value
 @AllArgsConstructor(access=AccessLevel.PRIVATE)
+@SuppressWarnings("UnstableApiUsage")
 public class BusPlayerConnector implements Runnable
 {
   Player player;
@@ -25,17 +26,29 @@ public class BusPlayerConnector implements Runnable
     getRunning().set(true);
     while(!getCancelled().get())
     {
-      getEventBus().post(getPlayer().getNextMove());
+        getEventBus().post(getPlayer().getNextMove());
     }
+
     getRunning().set(false);
+    synchronized(this)
+    {
+      this.notifyAll();
+    }
   }
 
+  @SneakyThrows
   public boolean cancel()
   {
-    boolean cancelled = !getCancelled().getAndSet(true);
+    boolean success = !getCancelled().getAndSet(true);
 
     while(getRunning().get())
-    {}
-    return cancelled;
+    {
+      synchronized(this)
+      {
+        this.wait();
+      }
+    }
+
+    return success;
   }
 }

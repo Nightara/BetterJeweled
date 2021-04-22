@@ -1,6 +1,6 @@
 package de.dhbw.swe.betterjeweled.player;
 
-import com.sun.javafx.collections.*;
+import com.sun.javafx.collections.*; // NOSONAR
 import de.dhbw.swe.betterjeweled.core.*;
 import javafx.application.*;
 import javafx.collections.*;
@@ -27,14 +27,23 @@ public class FxPlayer implements Initializable, Player
   public void initialize(URL url, ResourceBundle resourceBundle)
   {
     triggeredButtons = new ObservableListWrapper<>(Collections.synchronizedList(new LinkedList<>()));
+    triggeredButtons.addListener((ListChangeListener<CoordinateToggleButton>) evt ->
+    {
+      synchronized(FxPlayer.this)
+      {
+        FxPlayer.this.notifyAll();
+      }
+    });
   }
 
-  @SneakyThrows
   @Override
-  public Move getNextMove()
+  @SneakyThrows
+  public synchronized Move getNextMove()
   {
     while(getTriggeredButtons().size() < 2)
-    {}
+    {
+      this.wait();
+    }
 
     synchronized(getTriggeredButtons())
     {
@@ -93,5 +102,7 @@ public class FxPlayer implements Initializable, Player
 
   @Override
   public void run()
-  {}
+  {
+    // Not required, FX Thread is launched by the FX engine already.
+  }
 }
