@@ -1,6 +1,6 @@
-package de.dhbw.swe.betterjeweled.core;
+package de.dhbw.swe.betterjeweled.impl;
 
-import de.dhbw.swe.betterjeweled.impl.*;
+import de.dhbw.swe.betterjeweled.core.*;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
 

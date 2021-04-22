@@ -1,11 +1,11 @@
-package de.dhbw.swe.betterjeweled.core;
+package de.dhbw.swe.betterjeweled.impl;
 
 import com.google.common.eventbus.*;
+import de.dhbw.swe.betterjeweled.core.*;
 import lombok.*;
 import lombok.experimental.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 @Value
 @RequiredArgsConstructor(access=AccessLevel.PRIVATE)

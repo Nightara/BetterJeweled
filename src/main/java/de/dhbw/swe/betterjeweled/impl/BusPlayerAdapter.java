@@ -1,6 +1,7 @@
-package de.dhbw.swe.betterjeweled.core;
+package de.dhbw.swe.betterjeweled.impl;
 
 import com.google.common.eventbus.*;
+import de.dhbw.swe.betterjeweled.core.*;
 import lombok.*;
 
 import java.util.concurrent.atomic.*;
