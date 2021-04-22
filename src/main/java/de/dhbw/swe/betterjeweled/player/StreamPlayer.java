@@ -36,7 +36,7 @@ public class StreamPlayer implements Player
 
   @Override
   @SneakyThrows
-  public void pushChanges(CrystalEvent changeEvent)
+  public void handleChangeEvent(CrystalEvent changeEvent)
   {
     setGrid(changeEvent.getUpdatedGrid());
     setScore(changeEvent.getScoreDelta());
@@ -56,7 +56,7 @@ public class StreamPlayer implements Player
         if(matcher.matches())
         {
           Move nextMove = new Move(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)),
-              Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)));
+              Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)),null);
           getOut().write(("Supplied move: " + nextMove + "\n").getBytes(StandardCharsets.UTF_8));
           getMoves().add(nextMove);
         }

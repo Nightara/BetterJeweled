@@ -9,6 +9,7 @@ public class Move
   int y1;
   int x2;
   int y2;
+  Player source;
 
   @Override
   public boolean equals(Object o)

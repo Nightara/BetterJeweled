@@ -43,13 +43,13 @@ public class FxPlayer implements Initializable, Player
       CoordinateToggleButton b2 = getTriggeredButtons().remove(0);
       b2.setSelected(false);
 
-      return new Move(b1.getPosX(), b1.getPosY(), b2.getPosX(), b2.getPosY());
+      return new Move(b1.getPosX(), b1.getPosY(), b2.getPosX(), b2.getPosY(),null);
     }
   }
 
   @Override
   @SneakyThrows
-  public void pushChanges(CrystalEvent changeEvent)
+  public void handleChangeEvent(CrystalEvent changeEvent)
   {
     CountDownLatch finished = new CountDownLatch(1);
     Platform.runLater(() ->

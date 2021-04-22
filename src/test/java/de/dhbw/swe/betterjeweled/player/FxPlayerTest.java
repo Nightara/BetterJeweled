@@ -61,7 +61,7 @@ class FxPlayerTest
   @MethodSource("generateGridDimensions")
   void updateFxPlayer(int lenX, int lenY, Integer score)
   {
-    player.pushChanges(new CrystalEvent.Trigger(score, new Crystal[lenX][lenY], new Crystal[lenX][lenY]));
+    player.handleChangeEvent(new CrystalEvent.Trigger(score, new Crystal[lenX][lenY], new Crystal[lenX][lenY]));
 
     Assertions.assertEquals(lenX * lenY, grid.getChildren().size());
     Assertions.assertTrue(scoreBoard.getText().contains(score.toString()));
@@ -71,7 +71,7 @@ class FxPlayerTest
   @MethodSource("generateMoveData")
   void readFxPlayerMove(int posXOne, int posYOne, int posXTwo, int posYTwo)
   {
-    player.pushChanges(new CrystalEvent.Fill(new Crystal[5][5], new Crystal[5][5]));
+    player.handleChangeEvent(new CrystalEvent.Fill(new Crystal[5][5], new Crystal[5][5]));
 
     Platform.runLater(() -> grid.getChildren().stream()
         .filter(CoordinateToggleButton.class::isInstance)
@@ -80,6 +80,6 @@ class FxPlayerTest
             || (button.getPosX() == posXTwo && button.getPosY() == posYTwo))
         .forEach(ToggleButton::fire));
 
-    Assertions.assertEquals(new Move(posXOne, posYOne, posXTwo, posYTwo), player.getNextMove());
+    Assertions.assertEquals(new Move(posXOne, posYOne, posXTwo, posYTwo,null), player.getNextMove());
   }
 }

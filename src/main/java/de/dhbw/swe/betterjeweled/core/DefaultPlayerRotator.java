@@ -1,23 +1,45 @@
 package de.dhbw.swe.betterjeweled.core;
 
+import lombok.*;
+
 import java.util.*;
 
 public class DefaultPlayerRotator implements PlayerRotator
 {
-  private int lastIndex = -1;
+  @Setter
+  private List<Player> players;
 
-  public Player getFirstPlayer(List<Player> players)
+  private int nextIndex = 0;
+
+  public DefaultPlayerRotator(Player... players)
   {
-    lastIndex = 0;
-    return players.get(0);
+    this(Arrays.asList(players));
+  }
+
+  public DefaultPlayerRotator(List<Player> players)
+  {
+    this.players = players;
+  }
+
+  public Player reset()
+  {
+    nextIndex = 0;
+    return nextPlayer();
   }
 
   @Override
-  public Player apply(List<Player> players)
+  public Player nextPlayer()
   {
-    lastIndex++;
-    lastIndex %= players.size();
+    Player nextPlayer = peek();
+    nextIndex++;
+    nextIndex %= players.size();
 
-    return players.get(lastIndex);
+    return nextPlayer;
+  }
+
+  @Override
+  public Player peek()
+  {
+    return players.get(nextIndex);
   }
 }

@@ -2,12 +2,12 @@ package de.dhbw.swe.betterjeweled.core;
 
 import com.google.common.eventbus.*;
 import lombok.*;
+import lombok.experimental.*;
 
 import java.util.*;
 
 @Value
-@Builder
-@AllArgsConstructor(access=AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
 public class GameManager
 {
   EventBus eventBus;
@@ -17,19 +17,49 @@ public class GameManager
   PlayerRotator rotator;
   MoveExecutor executor;
   List<Player> players;
+  List<BusPlayerConnector> playerThreads;
+
+  @NonFinal
+  @Setter(AccessLevel.PRIVATE)
+  boolean listening = false;
 
   public GameManager(CrystalGrid grid, RegionFinder finder, RegionScorer scorer, PlayerRotator rotator,
                      MoveExecutor executor, Player... players)
   {
-    this(new EventBus(), grid, finder, scorer, rotator, executor, Arrays.asList(players));
-    Arrays.stream(players).forEach(this.eventBus::register);
+    this(new EventBus(), grid, finder, scorer, rotator, executor, Arrays.asList(players), new LinkedList<>());
+    Arrays.stream(players).forEach(player ->
+    {
+      this.eventBus.register(player);
+      BusPlayerConnector connector = new BusPlayerConnector(player, this.eventBus);
+      this.playerThreads.add(connector);
+    });
   }
 
-  // TODO: Use event bus to poll moves, not blocking operations
-  protected void runGameCycle()
+  public void launchConnectors()
   {
-    List<CrystalEvent> events = getExecutor().executeMove(getGrid(),getFinder(),getScorer(),
-        getRotator().apply(getPlayers()).getNextMove());
-    events.forEach(getEventBus()::post);
+    getPlayerThreads().forEach(thread -> new Thread(thread).start());
+  }
+
+  public void awaitNextMove()
+  {
+    setListening(true);
+    getEventBus().register(this);
+  }
+
+  @Subscribe
+  private void acceptMove(Move move)
+  {
+    try
+    {
+      if(isListening() && move.getSource() == getRotator().peek())
+      {
+        getExecutor().executeMove(getGrid(), getFinder(), getScorer(), move)
+            .forEach(getEventBus()::post);
+        setListening(false);
+        getEventBus().unregister(this);
+      }
+    }
+    catch(Exception ex)
+    {ex.printStackTrace();}
   }
 }

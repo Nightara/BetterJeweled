@@ -5,11 +5,11 @@ import com.google.common.eventbus.*;
 public interface Player extends Runnable
 {
   Move getNextMove();
-  void pushChanges(CrystalEvent changeEvent);
+  void handleChangeEvent(CrystalEvent changeEvent);
 
   @Subscribe
-  default void acceptMove(CrystalEvent changeEvent)
+  default void acceptChangeEvent(CrystalEvent changeEvent)
   {
-    pushChanges(changeEvent);
+    handleChangeEvent(changeEvent);
   }
 }

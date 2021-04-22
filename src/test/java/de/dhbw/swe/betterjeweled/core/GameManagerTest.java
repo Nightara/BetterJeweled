@@ -23,9 +23,9 @@ class GameManagerTest
   static void setupClass()
   {
     playerOne = Mockito.mock(Player.class);
-    Mockito.when(playerOne.getNextMove()).thenReturn(new Move(0,0,0,1));
+    Mockito.when(playerOne.getNextMove()).thenReturn(new Move(0,0,0,1, playerOne));
     playerTwo = Mockito.mock(Player.class);
-    Mockito.when(playerTwo.getNextMove()).thenReturn(new Move(1,1,1,2));
+    Mockito.when(playerTwo.getNextMove()).thenReturn(new Move(1,1,1,2, playerTwo));
     playerThree = Mockito.mock(Player.class);
   }
 
@@ -35,29 +35,17 @@ class GameManagerTest
     grid = new CrystalGrid(5,5, RED, GREEN, BLUE);
     grid.fillGrid();
 
-    manager = new GameManager(grid, new DefaultRegionFinder(), new DefaultRegionScorer(), new DefaultPlayerRotator(),
+    manager = new GameManager(grid, new DefaultRegionFinder(), new DefaultRegionScorer(),
+        new DefaultPlayerRotator(playerOne, playerTwo, playerThree),
         new DefaultMoveExecutor(), playerOne, playerTwo, playerThree);
   }
 
   @Test
-  void testRunGameCycle()
+  void testAwaitNextMove()
   {
-    manager.getEventBus().register(new Object()
-    {
-      @Subscribe
-      public void registerEvent(CrystalEvent changeEvent)
-      {
-        switch(changeEvent.getModifierType())
-        {
-          case MOVE:
-            Assertions.assertNotEquals(changeEvent.getUpdatedGrid(), changeEvent.getOldGrid());
-          default:
-            System.out.println(changeEvent);
-        }
-      }
-    });
+    manager.awaitNextMove();
+    manager.getEventBus().post(playerOne.getNextMove());
 
-    manager.runGameCycle();
-    manager.runGameCycle();
+    Mockito.verify(playerThree, Mockito.times(4)).acceptChangeEvent(Mockito.any(CrystalEvent.class));
   }
 }
