@@ -47,4 +47,9 @@ public abstract class CrystalEvent
       super(0, oldGrid, updatedGrid, ModifierType.FILL);
     }
   }
+
+  public enum ModifierType
+  {
+    MOVE, TRIGGER, SHIFT, FILL
+  }
 }

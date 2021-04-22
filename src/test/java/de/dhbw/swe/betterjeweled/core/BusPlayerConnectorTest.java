@@ -59,6 +59,9 @@ class BusPlayerConnectorTest
   @ValueSource(ints={0, 1})
   void testCancel(int x)
   {
+    while(!connectors.get(x).getRunning().get())
+    {}
+
     Assertions.assertTrue(connectors.get(x).getRunning().get());
     Mockito.verify(players.get(x), Mockito.atLeastOnce()).getNextMove();
 

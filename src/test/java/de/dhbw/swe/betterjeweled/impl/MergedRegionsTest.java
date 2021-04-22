@@ -1,13 +1,11 @@
 package de.dhbw.swe.betterjeweled.impl;
 
 import de.dhbw.swe.betterjeweled.core.*;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.awt.*;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class MergedRegionsTest {
 
@@ -20,7 +18,7 @@ public class MergedRegionsTest {
         CrystalRegion region1 = new CrystalRegion(0, 0, 1, 3);
         CrystalRegion region2 = new CrystalRegion(0, 0, 3, 1);
 
-        assertTrue(region1.intersects(region2));
+        Assertions.assertTrue(region1.intersects(region2));
     }
 
     @Test
@@ -28,7 +26,7 @@ public class MergedRegionsTest {
         CrystalRegion region1 = new CrystalRegion(0, 0, 1, 3);
         CrystalRegion region2 = new CrystalRegion(1, 1, 4, 2);
 
-        assertFalse(region1.intersects(region2));
+        Assertions.assertFalse(region1.intersects(region2));
     }
 
     @Test
@@ -41,27 +39,27 @@ public class MergedRegionsTest {
         CrystalRegion region4 = new CrystalRegion(0, 3, 3, 4);
         CrystalRegion region5 = new CrystalRegion(0, 0, 1, 3);
 
-        assertTrue(region1.intersects(region3));
-        assertTrue(region3.intersects(region1));
-        assertTrue(region1.intersects(region4));
-        assertTrue(region4.intersects(region1));
-        assertFalse(region1.intersects(region5));
-        assertFalse(region5.intersects(region1));
+        Assertions.assertTrue(region1.intersects(region3));
+        Assertions.assertTrue(region3.intersects(region1));
+        Assertions.assertTrue(region1.intersects(region4));
+        Assertions.assertTrue(region4.intersects(region1));
+        Assertions.assertFalse(region1.intersects(region5));
+        Assertions.assertFalse(region5.intersects(region1));
     }
 
     @Test
     void mergedRegionOverlapsMergedRegion() {
         CrystalRegion region1 = new CrystalRegion(1, 1, 2, 4);
         CrystalRegion region2 = new CrystalRegion(1, 1, 4, 2);
-        assertTrue(region1.intersects(region2));
+        Assertions.assertTrue(region1.intersects(region2));
         region1 = CrystalRegion.merge(region1, region2);
 
         CrystalRegion region3 = new CrystalRegion(3, 0, 4, 4);
         CrystalRegion region4 = new CrystalRegion(3, 3, 6, 4);
-        assertTrue(region3.intersects(region4));
+        Assertions.assertTrue(region3.intersects(region4));
         region3 = CrystalRegion.merge(region3, region4);
 
-        assertTrue(region1.intersects(region3));
+        Assertions.assertTrue(region1.intersects(region3));
     }
 
     private CrystalGrid triggerGridWithOverlap()
@@ -100,10 +98,10 @@ public class MergedRegionsTest {
         MergedRegionFinder mergeFinder = new MergedRegionFinder(finder);
 
         Map<Crystal, List<CrystalRegion>> regions = mergeFinder.findRegions(triggerGridWithOverlap(), new Crystal(Color.RED));
-        assertEquals(1, regions.size());
+        Assertions.assertEquals(1, regions.size());
 
         List<CrystalRegion> redRegions = regions.get(new Crystal(Color.RED));
-        assertEquals(1, redRegions.size());
+        Assertions.assertEquals(1, redRegions.size());
 
         CrystalRegion mergedRegion = redRegions.get(0);
         //assertEquals(7, mergedRegion.getSize());

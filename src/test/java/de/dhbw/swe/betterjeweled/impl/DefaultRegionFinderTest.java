@@ -7,8 +7,6 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class DefaultRegionFinderTest
 {
   private static final Crystal RED = new Crystal(Color.RED);
@@ -58,10 +56,10 @@ class DefaultRegionFinderTest
 
     Map<Crystal, List<CrystalRegion>> regions = regionFinder.findRegions(grid, grid.getColors());
 
-    assertEquals(3, regions.keySet().size());
-    assertEquals(3, regions.get(RED).size());
-    assertEquals(1, regions.get(GREEN).size());
-    assertEquals(1, regions.get(BLUE).size());
+    Assertions.assertEquals(3, regions.keySet().size());
+    Assertions.assertEquals(3, regions.get(RED).size());
+    Assertions.assertEquals(1, regions.get(GREEN).size());
+    Assertions.assertEquals(1, regions.get(BLUE).size());
   }
 
   @Test
@@ -69,9 +67,9 @@ class DefaultRegionFinderTest
   {
     Map<Crystal, List<CrystalRegion>> regions = new MergedRegionFinder(new DefaultRegionFinder()).findRegions(grid);
 
-    assertEquals(3, regions.keySet().size());
-    assertEquals(2, regions.get(RED).size());
-    assertEquals(1, regions.get(GREEN).size());
-    assertEquals(1, regions.get(BLUE).size());
+    Assertions.assertEquals(3, regions.keySet().size());
+    Assertions.assertEquals(2, regions.get(RED).size());
+    Assertions.assertEquals(1, regions.get(GREEN).size());
+    Assertions.assertEquals(1, regions.get(BLUE).size());
   }
 }
