@@ -1,5 +1,6 @@
-package de.dhbw.swe.betterjeweled.core;
+package de.dhbw.swe.betterjeweled.impl;
 
+import de.dhbw.swe.betterjeweled.core.*;
 import org.junit.jupiter.api.*;
 
 import java.awt.*;
@@ -8,7 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RegionFinderTest
+class DefaultRegionFinderTest
 {
   private static final Crystal RED = new Crystal(Color.RED);
   private static final Crystal GREEN = new Crystal(Color.GREEN);

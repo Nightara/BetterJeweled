@@ -1,6 +1,6 @@
 package de.dhbw.swe.betterjeweled.core;
 
-import com.google.common.eventbus.*;
+import de.dhbw.swe.betterjeweled.impl.*;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
 

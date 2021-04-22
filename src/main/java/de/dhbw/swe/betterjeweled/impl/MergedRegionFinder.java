@@ -1,5 +1,6 @@
-package de.dhbw.swe.betterjeweled.core;
+package de.dhbw.swe.betterjeweled.impl;
 
+import de.dhbw.swe.betterjeweled.core.*;
 import lombok.*;
 import lombok.experimental.NonFinal;
 
