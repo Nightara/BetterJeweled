@@ -6,18 +6,22 @@ import lombok.*;
 import java.util.concurrent.atomic.*;
 
 @Value
+@EqualsAndHashCode(callSuper=false)
 @AllArgsConstructor(access=AccessLevel.PRIVATE)
 @SuppressWarnings("UnstableApiUsage")
-public class BusPlayerConnector implements Runnable
+public class BusPlayerAdapter extends Thread
 {
+  Object[] synchronizer = new Object[0];
+
   Player player;
   EventBus eventBus;
   AtomicBoolean running;
   AtomicBoolean cancelled;
 
-  public BusPlayerConnector(Player player, EventBus eventBus)
+  public BusPlayerAdapter(Player player, EventBus eventBus)
   {
     this(player, eventBus, new AtomicBoolean(false), new AtomicBoolean(false));
+    this.eventBus.register(this);
   }
 
   @Override
@@ -30,9 +34,9 @@ public class BusPlayerConnector implements Runnable
     }
 
     getRunning().set(false);
-    synchronized(this)
+    synchronized(getSynchronizer())
     {
-      this.notifyAll();
+      getSynchronizer().notifyAll();
     }
   }
 
@@ -43,12 +47,18 @@ public class BusPlayerConnector implements Runnable
 
     while(getRunning().get())
     {
-      synchronized(this)
+      synchronized(getSynchronizer())
       {
-        this.wait();
+        getSynchronizer().wait();
       }
     }
 
     return success;
+  }
+
+  @Subscribe
+  public void handleChangeEvent(CrystalEvent changeEvent)
+  {
+    getPlayer().handleChangeEvent(changeEvent);
   }
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 @Value
 @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
@@ -17,8 +18,7 @@ public class GameManager
   RegionScorer scorer;
   PlayerRotator rotator;
   MoveExecutor executor;
-  List<Player> players;
-  List<BusPlayerConnector> playerThreads;
+  List<BusPlayerAdapter> players;
 
   @NonFinal
   @Setter(AccessLevel.PRIVATE)
@@ -28,18 +28,11 @@ public class GameManager
   public GameManager(CrystalGrid grid, RegionFinder finder, RegionScorer scorer, PlayerRotator rotator,
                      MoveExecutor executor, Player... players)
   {
-    this(new EventBus(), grid, finder, scorer, rotator, executor, Arrays.asList(players), new LinkedList<>());
-    Arrays.stream(players).forEach(player ->
-    {
-      this.eventBus.register(player);
-      BusPlayerConnector connector = new BusPlayerConnector(player, this.eventBus);
-      this.playerThreads.add(connector);
-    });
-  }
-
-  public void launchConnectors()
-  {
-    getPlayerThreads().forEach(thread -> new Thread(thread).start());
+    this(new EventBus(), grid, finder, scorer, rotator, executor, new LinkedList<>());
+    Arrays.stream(players)
+        .map(player -> new BusPlayerAdapter(player, this.eventBus))
+        .forEach(this.players::add);
+    getPlayers().forEach(Thread::start);
   }
 
   public void awaitNextMove()

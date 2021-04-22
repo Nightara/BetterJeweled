@@ -18,7 +18,6 @@ import java.util.stream.*;
 @ExtendWith(ApplicationExtension.class)
 class FxPlayerTest
 {
-  Stage stage;
   FxPlayer player;
   BorderPane root;
   GridPane grid;
@@ -54,7 +53,6 @@ class FxPlayerTest
 
     stage.setTitle("FxPlayer Test");
     stage.setScene(new Scene(root));
-    this.stage = stage;
   }
 
   @ParameterizedTest

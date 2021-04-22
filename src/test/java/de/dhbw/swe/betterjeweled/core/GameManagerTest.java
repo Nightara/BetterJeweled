@@ -16,7 +16,6 @@ class GameManagerTest
   private static Player playerTwo;
   private static Player playerThree;
 
-  private CrystalGrid grid;
   private GameManager manager;
 
   @BeforeAll
@@ -32,7 +31,7 @@ class GameManagerTest
   @BeforeEach
   void setupTest()
   {
-    grid = new CrystalGrid(5,5, RED, GREEN, BLUE);
+    CrystalGrid grid = new CrystalGrid(5,5, RED, GREEN, BLUE);
     grid.fillGrid();
 
     manager = new GameManager(grid, new DefaultRegionFinder(), new DefaultRegionScorer(),
@@ -41,11 +40,12 @@ class GameManagerTest
   }
 
   @Test
+  @SuppressWarnings("UnstableApiUsage")
   void testAwaitNextMove()
   {
     manager.awaitNextMove();
     manager.getEventBus().post(playerOne.getNextMove());
 
-    Mockito.verify(playerThree, Mockito.times(4)).acceptChangeEvent(Mockito.any(CrystalEvent.class));
+    Mockito.verify(playerThree, Mockito.times(4)).handleChangeEvent(Mockito.any(CrystalEvent.class));
   }
 }

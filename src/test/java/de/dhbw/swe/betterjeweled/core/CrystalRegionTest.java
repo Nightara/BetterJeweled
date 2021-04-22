@@ -4,7 +4,6 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 
-import java.awt.*;
 import java.util.stream.*;
 
 class CrystalRegionTest
