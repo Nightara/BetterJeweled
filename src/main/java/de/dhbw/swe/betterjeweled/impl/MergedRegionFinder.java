@@ -1,7 +1,8 @@
-package de.dhbw.swe.betterjeweled.core;
+package de.dhbw.swe.betterjeweled.impl;
 
+import de.dhbw.swe.betterjeweled.core.*;
 import lombok.*;
-import lombok.experimental.NonFinal;
+import lombok.experimental.*;
 
 import java.util.*;
 
@@ -24,9 +25,10 @@ public class MergedRegionFinder implements RegionFinder
   {
     Map<Crystal, List<CrystalRegion>> regions = getRegionFinder().findRegions(grid, crystals);
     Map<Crystal, List<CrystalRegion>> toReturn = new HashMap<>();
-    for(Crystal crystal : regions.keySet())
+    for(Map.Entry<Crystal, List<CrystalRegion>> entry : regions.entrySet())
     {
-      List<CrystalRegion> temp = regions.get(crystal);
+      Crystal crystal = entry.getKey();
+      List<CrystalRegion> temp = entry.getValue();
       for(int i = 0; i < temp.size(); i++)
       {
         CrystalRegion firstRegion = temp.get(i);
@@ -35,10 +37,11 @@ public class MergedRegionFinder implements RegionFinder
           CrystalRegion secondRegion = temp.get(j);
           if(firstRegion.intersects(secondRegion))
           {
-            temp.set(i, CrystalRegion.merge(firstRegion, secondRegion));
+            firstRegion = CrystalRegion.merge(firstRegion, secondRegion);
             temp.remove(secondRegion);
           }
         }
+        temp.set(i, firstRegion);
       }
       toReturn.put(crystal, temp);
     }

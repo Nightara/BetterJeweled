@@ -1,4 +1,6 @@
-package de.dhbw.swe.betterjeweled.core;
+package de.dhbw.swe.betterjeweled.impl;
+
+import de.dhbw.swe.betterjeweled.core.*;
 
 import static de.dhbw.swe.betterjeweled.core.CrystalGrid.*;
 

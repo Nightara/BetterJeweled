@@ -18,7 +18,6 @@ import java.util.stream.*;
 @ExtendWith(ApplicationExtension.class)
 class FxPlayerTest
 {
-  Stage stage;
   FxPlayer player;
   BorderPane root;
   GridPane grid;
@@ -54,14 +53,13 @@ class FxPlayerTest
 
     stage.setTitle("FxPlayer Test");
     stage.setScene(new Scene(root));
-    this.stage = stage;
   }
 
   @ParameterizedTest
   @MethodSource("generateGridDimensions")
   void updateFxPlayer(int lenX, int lenY, Integer score)
   {
-    player.pushChanges(new Crystal[lenX][lenY], ModifierType.MOVE, score);
+    player.handleChangeEvent(new CrystalEvent.Trigger(score, new Crystal[lenX][lenY], new Crystal[lenX][lenY]));
 
     Assertions.assertEquals(lenX * lenY, grid.getChildren().size());
     Assertions.assertTrue(scoreBoard.getText().contains(score.toString()));
@@ -71,7 +69,7 @@ class FxPlayerTest
   @MethodSource("generateMoveData")
   void readFxPlayerMove(int posXOne, int posYOne, int posXTwo, int posYTwo)
   {
-    player.pushChanges(new Crystal[5][5], ModifierType.MOVE, 0);
+    player.handleChangeEvent(new CrystalEvent.Fill(new Crystal[5][5], new Crystal[5][5]));
 
     Platform.runLater(() -> grid.getChildren().stream()
         .filter(CoordinateToggleButton.class::isInstance)
@@ -80,6 +78,33 @@ class FxPlayerTest
             || (button.getPosX() == posXTwo && button.getPosY() == posYTwo))
         .forEach(ToggleButton::fire));
 
-    Assertions.assertEquals(new Move(posXOne, posYOne, posXTwo, posYTwo), player.getMove());
+    Assertions.assertEquals(new Move(posXOne, posYOne, posXTwo, posYTwo,null), player.getNextMove());
+  }
+
+  @ParameterizedTest
+  @MethodSource("generateMoveData")
+  @SuppressWarnings("java:S2925")
+  void readFxPlayerMoveWithDelay(int posXOne, int posYOne, int posXTwo, int posYTwo)
+  {
+    player.handleChangeEvent(new CrystalEvent.Fill(new Crystal[5][5], new Crystal[5][5]));
+
+    Platform.runLater(() ->
+    {
+      try
+      {
+        Thread.sleep(100);
+      }
+      catch(InterruptedException ignored)
+      {}
+
+      grid.getChildren().stream()
+          .filter(CoordinateToggleButton.class::isInstance)
+          .map(CoordinateToggleButton.class::cast)
+          .filter(button -> (button.getPosX() == posXOne && button.getPosY() == posYOne)
+              || (button.getPosX() == posXTwo && button.getPosY() == posYTwo))
+          .forEach(ToggleButton::fire);
+    });
+
+    Assertions.assertEquals(new Move(posXOne, posYOne, posXTwo, posYTwo,null), player.getNextMove());
   }
 }

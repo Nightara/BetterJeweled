@@ -1,10 +1,11 @@
-package de.dhbw.swe.betterjeweled.core;
+package de.dhbw.swe.betterjeweled.impl;
 
+import de.dhbw.swe.betterjeweled.core.*;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RegionScorerTest
+class DefaultRegionScorerTest
 {
   @Test
   void scoreRegion()

@@ -90,6 +90,31 @@ public class CrystalRegion
         .anyMatch(other.getPositions()::contains);
   }
 
+  @SuppressWarnings("SuspiciousNameCombination")
+  public CrystalRegion transposed()
+  {
+    if(!getPositions().isEmpty())
+    {
+      int startX = Integer.MAX_VALUE;
+      int startY = Integer.MAX_VALUE;
+      int endX = Integer.MIN_VALUE;
+      int endY = Integer.MIN_VALUE;
+
+      for(Position position : getPositions())
+      {
+        startX = Math.min(startX, position.getX());
+        startY = Math.min(startY, position.getY());
+        endX = Math.max(endX, position.getX());
+        endY = Math.max(endY, position.getY());
+      }
+      return new CrystalRegion(startY, startX,endY + 1,endX + 1);
+    }
+    else
+    {
+      return new CrystalRegion(Collections.emptySet());
+    }
+  }
+
   /**
    * This method takes two or more CrystalRegions and merges them, returning a new Region composed of the merged ones.
    * @param regions An array of CrystalRegions to merge

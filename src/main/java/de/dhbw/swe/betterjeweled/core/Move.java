@@ -1,6 +1,6 @@
 package de.dhbw.swe.betterjeweled.core;
 
-import lombok.Value;
+import lombok.*;
 
 @Value
 public class Move
@@ -9,6 +9,7 @@ public class Move
   int y1;
   int x2;
   int y2;
+  Player source;
 
   @Override
   public boolean equals(Object o)

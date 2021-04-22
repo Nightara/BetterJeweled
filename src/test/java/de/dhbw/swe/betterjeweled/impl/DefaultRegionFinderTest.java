@@ -1,14 +1,13 @@
-package de.dhbw.swe.betterjeweled.core;
+package de.dhbw.swe.betterjeweled.impl;
 
+import de.dhbw.swe.betterjeweled.core.*;
 import org.junit.jupiter.api.*;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class RegionFinderTest
+class DefaultRegionFinderTest
 {
   private static final Crystal RED = new Crystal(Color.RED);
   private static final Crystal GREEN = new Crystal(Color.GREEN);
@@ -57,10 +56,10 @@ class RegionFinderTest
 
     Map<Crystal, List<CrystalRegion>> regions = regionFinder.findRegions(grid, grid.getColors());
 
-    assertEquals(3, regions.keySet().size());
-    assertEquals(3, regions.get(RED).size());
-    assertEquals(1, regions.get(GREEN).size());
-    assertEquals(1, regions.get(BLUE).size());
+    Assertions.assertEquals(3, regions.keySet().size());
+    Assertions.assertEquals(3, regions.get(RED).size());
+    Assertions.assertEquals(1, regions.get(GREEN).size());
+    Assertions.assertEquals(1, regions.get(BLUE).size());
   }
 
   @Test
@@ -68,9 +67,31 @@ class RegionFinderTest
   {
     Map<Crystal, List<CrystalRegion>> regions = new MergedRegionFinder(new DefaultRegionFinder()).findRegions(grid);
 
-    assertEquals(3, regions.keySet().size());
-    assertEquals(2, regions.get(RED).size());
-    assertEquals(1, regions.get(GREEN).size());
-    assertEquals(1, regions.get(BLUE).size());
+    Assertions.assertEquals(3, regions.keySet().size());
+    Assertions.assertEquals(2, regions.get(RED).size());
+    Assertions.assertEquals(1, regions.get(GREEN).size());
+    Assertions.assertEquals(1, regions.get(BLUE).size());
+  }
+
+  @Test
+  void testTransposeGrid()
+  {
+    Boolean[][] grid = new Boolean[][]
+        {
+            new Boolean[]{true, false, true, false},
+            new Boolean[]{false, true, false, true},
+            new Boolean[]{true, true, false, false},
+        };
+    Boolean[][] transposed = new Boolean[][]
+        {
+            new Boolean[]{true, false, true},
+            new Boolean[]{false, true, true},
+            new Boolean[]{true, false, false},
+            new Boolean[]{false, true, false},
+        };
+
+    Assertions.assertArrayEquals(transposed, DefaultRegionFinder.transposeGrid(grid));
+    Assertions.assertArrayEquals(grid, DefaultRegionFinder.transposeGrid(transposed));
+    Assertions.assertArrayEquals(grid, DefaultRegionFinder.transposeGrid(DefaultRegionFinder.transposeGrid(grid)));
   }
 }

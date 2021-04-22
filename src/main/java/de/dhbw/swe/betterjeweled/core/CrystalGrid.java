@@ -3,7 +3,6 @@ package de.dhbw.swe.betterjeweled.core;
 import lombok.*;
 
 import java.util.*;
-import java.util.List;
 
 /**
  * The CrystalGrid class represents a rectangular grid of variable size containing any number of crystals within its

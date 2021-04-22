@@ -1,6 +1,6 @@
 package de.dhbw.swe.betterjeweled.player;
 
-import com.sun.javafx.collections.*;
+import com.sun.javafx.collections.*; // NOSONAR
 import de.dhbw.swe.betterjeweled.core.*;
 import javafx.application.*;
 import javafx.collections.*;
@@ -27,14 +27,23 @@ public class FxPlayer implements Initializable, Player
   public void initialize(URL url, ResourceBundle resourceBundle)
   {
     triggeredButtons = new ObservableListWrapper<>(Collections.synchronizedList(new LinkedList<>()));
+    triggeredButtons.addListener((ListChangeListener<CoordinateToggleButton>) evt ->
+    {
+      synchronized(FxPlayer.this)
+      {
+        FxPlayer.this.notifyAll();
+      }
+    });
   }
 
-  @SneakyThrows
   @Override
-  public Move getMove()
+  @SneakyThrows
+  public synchronized Move getNextMove()
   {
     while(getTriggeredButtons().size() < 2)
-    {}
+    {
+      this.wait();
+    }
 
     synchronized(getTriggeredButtons())
     {
@@ -43,27 +52,27 @@ public class FxPlayer implements Initializable, Player
       CoordinateToggleButton b2 = getTriggeredButtons().remove(0);
       b2.setSelected(false);
 
-      return new Move(b1.getPosX(), b1.getPosY(), b2.getPosX(), b2.getPosY());
+      return new Move(b1.getPosX(), b1.getPosY(), b2.getPosX(), b2.getPosY(),null);
     }
   }
 
   @Override
   @SneakyThrows
-  public void pushChanges(Crystal[][] grid, ModifierType type, int score)
+  public void handleChangeEvent(CrystalEvent changeEvent)
   {
     CountDownLatch finished = new CountDownLatch(1);
     Platform.runLater(() ->
     {
       getGameField().getChildren().clear();
-      for(int x = 0; x < grid.length; x++)
+      for(int x = 0; x < changeEvent.getUpdatedGrid().length; x++)
       {
-        for(int y = 0; y < grid[x].length; y++)
+        for(int y = 0; y < changeEvent.getUpdatedGrid()[x].length; y++)
         {
-          getGameField().add(generateCrystalNode(x, y, grid[x][y]), x, y);
+          getGameField().add(generateCrystalNode(x, y, changeEvent.getUpdatedGrid()[x][y]), x, y);
         }
       }
 
-      scoreBoard.setText("Current score: " + score);
+      scoreBoard.setText("Current score: " + changeEvent.getScoreDelta());
       finished.countDown();
     });
 
@@ -93,5 +102,7 @@ public class FxPlayer implements Initializable, Player
 
   @Override
   public void run()
-  {}
+  {
+    // Not required, FX Thread is launched by the FX engine already.
+  }
 }

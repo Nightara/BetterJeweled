@@ -11,8 +11,8 @@ import java.util.regex.*;
 @Data
 public class StreamPlayer implements Player
 {
-  public static final Pattern INPUT_PATTERN = Pattern.compile("^(\\d+)(?>,|\\s)\\s*(\\d+)\\s*(?>\\||\\s)" +
-      "\\s*(\\d+)(?>,|\\s)\\s*(\\d+)$");
+  public static final Pattern INPUT_PATTERN = Pattern.compile("^(\\d+)(?>[,\\s])\\s*(\\d+)\\s*(?>[|\\s])" +
+      "\\s*(\\d+)(?>[,\\s])\\s*(\\d+)$");
 
   private final List<Move> moves = Collections.synchronizedList(new LinkedList<>());
   @Getter(AccessLevel.PRIVATE)
@@ -26,20 +26,22 @@ public class StreamPlayer implements Player
   private Crystal[][] grid = null;
 
   @Override
-  @Synchronized
-  public Move getMove()
+  @SneakyThrows
+  public synchronized Move getNextMove()
   {
     while(getMoves().isEmpty())
-    {}
+    {
+      this.wait();
+    }
     return getMoves().remove(0);
   }
 
   @Override
   @SneakyThrows
-  public void pushChanges(Crystal[][] grid, ModifierType type, int score)
+  public void handleChangeEvent(CrystalEvent changeEvent)
   {
-    setGrid(grid);
-    setScore(score);
+    setGrid(changeEvent.getUpdatedGrid());
+    setScore(changeEvent.getScoreDelta());
 
     getOut().write(renderGrid().getBytes());
     getOut().flush();
@@ -52,24 +54,28 @@ public class StreamPlayer implements Player
     {
       while(scanner.hasNextLine())
       {
-        Matcher matcher = INPUT_PATTERN.matcher(scanner.nextLine());
-        if(matcher.matches())
+        synchronized(this)
         {
-          Move nextMove = new Move(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)),
-              Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)));
-          getOut().write(("Supplied move: " + nextMove + "\n").getBytes(StandardCharsets.UTF_8));
-          getMoves().add(nextMove);
+          Matcher matcher = INPUT_PATTERN.matcher(scanner.nextLine());
+          if(matcher.matches())
+          {
+            Move nextMove = new Move(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)),
+                Integer.parseInt(matcher.group(3)), Integer.parseInt(matcher.group(4)), null);
+            getOut().write(("Supplied move: " + nextMove + "\n").getBytes(StandardCharsets.UTF_8));
+            getMoves().add(nextMove);
+            this.notifyAll();
+          }
+          else
+          {
+            getOut().write("invalid input\n".getBytes(StandardCharsets.UTF_8));
+          }
+          getOut().flush();
         }
-        else
-        {
-          getOut().write("invalid input\n".getBytes(StandardCharsets.UTF_8));
-        }
-        getOut().flush();
       }
     }
     catch(IOException ex)
     {
-      System.err.println(ex.getMessage());
+      ex.printStackTrace();
     }
   }
 
