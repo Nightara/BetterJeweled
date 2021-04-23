@@ -48,8 +48,17 @@ public abstract class CrystalEvent
     }
   }
 
+  @ToString(callSuper=true)
+  public static class TurnEnd extends CrystalEvent
+  {
+    public TurnEnd()
+    {
+      super(0, new Crystal[0][0], new Crystal[0][0], ModifierType.TURN_END);
+    }
+  }
+
   public enum ModifierType
   {
-    MOVE, TRIGGER, SHIFT, FILL
+    MOVE, TRIGGER, SHIFT, FILL, TURN_END
   }
 }
