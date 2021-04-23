@@ -45,7 +45,7 @@ class DefaultMoveExecutorTest
 
     List<CrystalEvent> events = executor.executeMove(grid, finder, scorer, legalMove);
 
-    Assertions.assertEquals(4, events.size());
+    Assertions.assertEquals(5, events.size());
     Assertions.assertEquals(CrystalEvent.Move.class, events.get(0).getClass());
     Assertions.assertEquals(CrystalEvent.Trigger.class, events.get(1).getClass());
     Assertions.assertEquals(CrystalEvent.Shift.class, events.get(2).getClass());
