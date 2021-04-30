@@ -5,6 +5,7 @@ import lombok.experimental.*;
 
 @Value
 @NonFinal
+// TODO: Rename CrystalEvent class for DDD
 public abstract class CrystalEvent
 {
   int scoreDelta;
