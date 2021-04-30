@@ -2,8 +2,10 @@ package de.dhbw.swe.betterjeweled.player;
 
 import javafx.scene.control.*;
 import lombok.*;
+import lombok.experimental.*;
 
 @Value
+@NonFinal
 @EqualsAndHashCode(callSuper=true)
 @SuppressWarnings("java:S110")
 public class CoordinateToggleButton extends ToggleButton

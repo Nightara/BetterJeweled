@@ -5,23 +5,30 @@ import javafx.application.*;
 import javafx.fxml.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.*;
+import lombok.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 import org.testfx.framework.junit5.*;
 
+import java.awt.*;
 import java.util.stream.*;
 
 @ExtendWith(ApplicationExtension.class)
 class FxPlayerTest
 {
-  FxPlayer player;
-  BorderPane root;
-  GridPane grid;
-  Label scoreBoard;
+  private static final Crystal RED = new Crystal(Color.RED);
+  private static final Crystal GREEN = new Crystal(Color.GREEN);
+  private static final Crystal BLUE = new Crystal(Color.BLUE);
+
+  private Stage stage;
+  private GridPane grid;
+  private FxPlayer player;
+  private Label scoreBoard;
 
   private static Stream<Arguments> generateGridDimensions()
   {
@@ -42,11 +49,30 @@ class FxPlayerTest
     );
   }
 
+  private static Stream<Crystal[][]> generateFilledGrids()
+  {
+    return Stream.of(
+        new Crystal[][]
+        {
+            new Crystal[]{RED, GREEN, RED, RED},
+            new Crystal[]{GREEN, BLUE, null, RED},
+            new Crystal[]{GREEN, GREEN, BLUE, GREEN},
+            new Crystal[]{BLUE, RED, RED, BLUE}
+        },
+        new Crystal[][]
+            {
+                new Crystal[]{GREEN, GREEN, BLUE, RED},
+                new Crystal[]{BLUE, null, RED, GREEN},
+                new Crystal[]{GREEN, GREEN, RED, BLUE}
+            }
+    );
+  }
+
   @Start
   void start(Stage stage) throws Exception
   {
     FXMLLoader loader = new FXMLLoader(FxPlayer.class.getResource("Game.fxml"));
-    root = loader.load();
+    BorderPane root = loader.load();
     player = loader.getController();
     grid = (GridPane) root.getCenter();
     scoreBoard = (Label) root.getBottom();
@@ -63,6 +89,19 @@ class FxPlayerTest
 
     Assertions.assertEquals(lenX * lenY, grid.getChildren().size());
     Assertions.assertTrue(scoreBoard.getText().contains(score.toString()));
+  }
+
+  @SneakyThrows
+  @ParameterizedTest
+  @MethodSource("generateFilledGrids")
+  void fillFxPlayer(Crystal[][] crystalGrid)
+  {
+    player.handleChangeEvent(new CrystalEvent.Fill(new Crystal[0][0], crystalGrid));
+
+    grid.getChildren().stream()
+        .filter(CrystalButton.class::isInstance)
+        .map(CrystalButton.class::cast)
+        .forEach(button -> Assertions.assertSame(crystalGrid[button.getPosX()][button.getPosY()], button.getCrystal()));
   }
 
   @ParameterizedTest
