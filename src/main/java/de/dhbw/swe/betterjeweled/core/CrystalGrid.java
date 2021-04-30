@@ -28,6 +28,7 @@ import java.util.*;
  * empty fields towards negative y.
  */
 @Value
+// TODO: Fix naming of grid vs field, fix naming switchCrystals / exchangeCrystals
 public class CrystalGrid
 {
   /**

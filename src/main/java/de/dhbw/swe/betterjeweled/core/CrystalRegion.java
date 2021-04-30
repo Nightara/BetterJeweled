@@ -33,6 +33,7 @@ import lombok.*;
  * [0, 0; 0, 0]
  */
 @Value
+// TODO: Rename to CrystalCombination
 public class CrystalRegion
 {
   @Getter(AccessLevel.PRIVATE)

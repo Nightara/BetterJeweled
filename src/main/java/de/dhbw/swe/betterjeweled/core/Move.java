@@ -3,6 +3,7 @@ package de.dhbw.swe.betterjeweled.core;
 import lombok.*;
 
 @Value
+// TODO: Rename to CrystalPair
 public class Move
 {
   int x1;
