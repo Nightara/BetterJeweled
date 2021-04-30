@@ -25,6 +25,7 @@ public class Move
           && getX2() == move.getX1() && getY2() == move.getY1());
   }
 
+  // TODO: Test
   @Override
   public int hashCode()
   {

@@ -24,6 +24,7 @@ import java.util.function.*;
 @SuppressWarnings("UnstableApiUsage")
 public class GameManager
 {
+  // TODO: Add score tracking per player
   EventBus eventBus;
   CrystalGrid grid;
   RegionFinder finder;
@@ -62,6 +63,7 @@ public class GameManager
    * This method is called automatically with the public constructor or when calling the protected constructor with
    * autoLaunch = true.
    */
+  // TODO: Test
   protected void launchThreads()
   {
     getPlayers().stream()

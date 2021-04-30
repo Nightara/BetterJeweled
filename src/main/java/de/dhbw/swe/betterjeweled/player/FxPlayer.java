@@ -87,6 +87,7 @@ public class FxPlayer implements Initializable, Player
     return button;
   }
 
+  // TODO: Test whether double toggle removes button from trigger list
   @Synchronized
   private void toggleCrystal(CoordinateToggleButton button)
   {

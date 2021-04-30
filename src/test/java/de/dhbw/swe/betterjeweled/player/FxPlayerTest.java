@@ -25,7 +25,6 @@ class FxPlayerTest
   private static final Crystal GREEN = new Crystal(Color.GREEN);
   private static final Crystal BLUE = new Crystal(Color.BLUE);
 
-  private Stage stage;
   private GridPane grid;
   private FxPlayer player;
   private Label scoreBoard;
@@ -79,6 +78,7 @@ class FxPlayerTest
 
     stage.setTitle("FxPlayer Test");
     stage.setScene(new Scene(root));
+    stage.show();
   }
 
   @ParameterizedTest
