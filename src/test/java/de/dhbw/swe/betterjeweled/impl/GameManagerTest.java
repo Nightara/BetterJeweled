@@ -22,28 +22,28 @@ class GameManagerTest
   @BeforeEach
   void setupTest()
   {
-    List<CrystalEvent> events = new LinkedList<>();
-    events.add(new CrystalEvent.Move(new Crystal[0][0], new Crystal[0][0]));
-    events.add(new CrystalEvent.Trigger(0, new Crystal[0][0], new Crystal[0][0]));
-    events.add(new CrystalEvent.Shift(new Crystal[0][0], new Crystal[0][0]));
-    events.add(new CrystalEvent.Fill(new Crystal[0][0], new Crystal[0][0]));
-    events.add(new CrystalEvent.TurnEnd());
+    List<GameUpdate> events = new LinkedList<>();
+    events.add(new GameUpdate.Move(new Crystal[0][0], new Crystal[0][0]));
+    events.add(new GameUpdate.Trigger(0, new Crystal[0][0], new Crystal[0][0]));
+    events.add(new GameUpdate.Shift(new Crystal[0][0], new Crystal[0][0]));
+    events.add(new GameUpdate.Fill(new Crystal[0][0], new Crystal[0][0]));
+    events.add(new GameUpdate.TurnEnd());
 
     playerOne = Mockito.mock(Player.class);
-    Mockito.when(playerOne.getNextMove()).thenReturn(new Move(0,0,0,1, playerOne));
+    Mockito.when(playerOne.getNextMove()).thenReturn(new CrystalPair(0,0,0,1, playerOne));
     playerTwo = Mockito.mock(Player.class);
-    Mockito.when(playerTwo.getNextMove()).thenReturn(new Move(1,1,1,2, playerTwo));
+    Mockito.when(playerTwo.getNextMove()).thenReturn(new CrystalPair(1,1,1,2, playerTwo));
     playerThree = Mockito.mock(Player.class);
-    RegionFinder finder = Mockito.mock(RegionFinder.class);
+    CombinationFinder finder = Mockito.mock(CombinationFinder.class);
     Mockito.when(finder.findRegions(Mockito.any(CrystalGrid.class), Mockito.any(Crystal[].class)))
         .thenReturn(new HashMap<>());
-    RegionScorer scorer = Mockito.mock(RegionScorer.class);
-    Mockito.when(scorer.scoreRegion(Mockito.any(CrystalRegion.class))).thenReturn(0);
-    PlayerRotator rotator = Mockito.mock(PlayerRotator.class);
+    CombinationScorer scorer = Mockito.mock(CombinationScorer.class);
+    Mockito.when(scorer.scoreRegion(Mockito.any(CrystalCombination.class))).thenReturn(0);
+    PlayerProvider rotator = Mockito.mock(PlayerProvider.class);
     Mockito.when(rotator.peek()).thenReturn(playerOne);
     MoveExecutor executor = Mockito.mock(MoveExecutor.class);
     Mockito.when(executor.executeMove(Mockito.any(CrystalGrid.class), Mockito.eq(finder), Mockito.eq(scorer),
-        Mockito.any(Move.class)))
+        Mockito.any(CrystalPair.class)))
         .thenReturn(events);
 
     CrystalGrid grid = new CrystalGrid(5,5, RED, GREEN, BLUE);
@@ -60,7 +60,7 @@ class GameManagerTest
     manager.awaitNextMove();
     manager.getEventBus().post(playerOne.getNextMove());
 
-    Mockito.verify(playerThree, Mockito.times(5)).handleChangeEvent(Mockito.any(CrystalEvent.class));
+    Mockito.verify(playerThree, Mockito.times(5)).handleGameUpdate(Mockito.any(GameUpdate.class));
   }
 
   @Test
@@ -68,12 +68,12 @@ class GameManagerTest
   void testUnregister()
   {
     manager.awaitNextMove();
-    manager.getEventBus().post(new CrystalEvent.TurnEnd());
+    manager.getEventBus().post(new GameUpdate.TurnEnd());
 
     Assertions.assertFalse(manager.isListening());
 
     manager.getEventBus().post(playerOne.getNextMove());
-    Mockito.verify(playerTwo).handleChangeEvent(Mockito.any(CrystalEvent.class));
+    Mockito.verify(playerTwo).handleGameUpdate(Mockito.any(GameUpdate.class));
   }
 
   @Test
@@ -81,7 +81,7 @@ class GameManagerTest
   void testRotatePlayer()
   {
     manager.awaitNextMove();
-    manager.getEventBus().post(new CrystalEvent.TurnEnd());
+    manager.getEventBus().post(new GameUpdate.TurnEnd());
 
     Mockito.verify(manager.getRotator()).nextPlayer();
   }

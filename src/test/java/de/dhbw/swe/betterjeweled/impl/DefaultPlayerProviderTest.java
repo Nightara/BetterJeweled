@@ -4,12 +4,12 @@ import de.dhbw.swe.betterjeweled.core.*;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
 
-class DefaultPlayerRotatorTest
+class DefaultPlayerProviderTest
 {
   private static Player playerOne;
   private static Player playerTwo;
 
-  private PlayerRotator rotator;
+  private PlayerProvider rotator;
 
   @BeforeAll
   static void setupClass()
@@ -21,7 +21,7 @@ class DefaultPlayerRotatorTest
   @BeforeEach
   void setupTest()
   {
-    rotator = new DefaultPlayerRotator(playerOne, playerTwo);
+    rotator = new DefaultPlayerProvider(playerOne, playerTwo);
   }
 
   @Test

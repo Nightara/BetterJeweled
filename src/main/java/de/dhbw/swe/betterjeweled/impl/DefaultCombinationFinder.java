@@ -13,7 +13,7 @@ import static de.dhbw.swe.betterjeweled.core.CrystalGrid.*;
  * This RegionFinder does not check for overlapping or fully contained regions and may result in multiple hits for
  * longer sequences.
  */
-public class DefaultRegionFinder implements RegionFinder
+public class DefaultCombinationFinder implements CombinationFinder
 {
   /**
    * Detects all regions of at least MIN_COMBO_SIZE length sorted by crystal type and returns them as a map of lists.
@@ -21,17 +21,17 @@ public class DefaultRegionFinder implements RegionFinder
    * @return All regions in the current grid
    */
   @Override
-  public Map<Crystal, List<CrystalRegion>> findRegions(CrystalGrid grid, Collection<Crystal> crystals)
+  public Map<Crystal, List<CrystalCombination>> findRegions(CrystalGrid grid, Collection<Crystal> crystals)
   {
     return crystals.stream().collect(Collectors.toMap(Function.identity(), color ->
     {
-      Boolean[][] filteredGrid = Arrays.stream(grid.viewField())
+      Boolean[][] filteredGrid = Arrays.stream(grid.viewGrid())
           .map(row -> Arrays.stream(row)
               .map(crystal -> crystal != null && crystal.countsAs(color))
               .toArray(Boolean[]::new))
           .toArray(Boolean[][]::new);
 
-      List<CrystalRegion> regions = new LinkedList<>(findRegionsInY(filteredGrid));
+      List<CrystalCombination> regions = new LinkedList<>(findRegionsInY(filteredGrid));
       findRegionsInY(transposeGrid(filteredGrid)).forEach(region -> regions.add(region.transposed()));
 
       return regions;
@@ -39,9 +39,9 @@ public class DefaultRegionFinder implements RegionFinder
   }
 
   @SuppressWarnings("java:S127")
-  private static List<CrystalRegion> findRegionsInY(Boolean[][] filteredGrid)
+  private static List<CrystalCombination> findRegionsInY(Boolean[][] filteredGrid)
   {
-    List<CrystalRegion> regions = new LinkedList<>();
+    List<CrystalCombination> regions = new LinkedList<>();
 
     for(int x = 0; x < filteredGrid.length; x++)
     {
@@ -55,7 +55,7 @@ public class DefaultRegionFinder implements RegionFinder
 
         if(endY - startY >= MIN_COMBO_SIZE)
         {
-          regions.add(new CrystalRegion(x, startY,x + 1, endY));
+          regions.add(new CrystalCombination(x, startY,x + 1, endY));
           startY = endY - 1;
         }
       }

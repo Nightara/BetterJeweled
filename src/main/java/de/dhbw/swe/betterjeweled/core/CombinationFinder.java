@@ -3,7 +3,7 @@ package de.dhbw.swe.betterjeweled.core;
 import java.util.*;
 
 @FunctionalInterface
-public interface RegionFinder
+public interface CombinationFinder
 {
   /**
    * Detects all regions of the given crystal types and returns them grouped by crystal type.
@@ -12,7 +12,7 @@ public interface RegionFinder
    * @param crystals The crystal types to look for
    * @return A map containing all detected regions
    */
-  Map<Crystal, List<CrystalRegion>> findRegions(CrystalGrid grid, Collection<Crystal> crystals);
+  Map<Crystal, List<CrystalCombination>> findRegions(CrystalGrid grid, Collection<Crystal> crystals);
 
   /**
    * A convenience Varargs wrapper for RegionFinder#findRegions.
@@ -22,7 +22,7 @@ public interface RegionFinder
    * @param crystals The crystal types to look for
    * @return A map containing all detected regions
    */
-  default Map<Crystal, List<CrystalRegion>> findRegions(CrystalGrid grid, Crystal... crystals)
+  default Map<Crystal, List<CrystalCombination>> findRegions(CrystalGrid grid, Crystal... crystals)
   {
     if(crystals.length == 0)
     {

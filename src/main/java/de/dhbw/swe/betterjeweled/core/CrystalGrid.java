@@ -28,7 +28,6 @@ import java.util.*;
  * empty fields towards negative y.
  */
 @Value
-// TODO: Fix naming of grid vs field, fix naming switchCrystals / exchangeCrystals
 public class CrystalGrid
 {
   /**
@@ -44,7 +43,7 @@ public class CrystalGrid
   int sizeY;
   Crystal[] colors;
   @Getter(AccessLevel.PRIVATE)
-  Crystal[][] field;
+  Crystal[][] grid;
   
   @EqualsAndHashCode.Exclude
   @Getter(AccessLevel.PRIVATE)
@@ -87,7 +86,7 @@ public class CrystalGrid
     this.sizeY = sizeY;
     this.colors = colors;
     this.random = new Random(seed);
-    this.field = new Crystal[sizeX][sizeY];
+    this.grid = new Crystal[sizeX][sizeY];
   }
 
   /**
@@ -113,7 +112,7 @@ public class CrystalGrid
     if(posX >= 0 && posX < getSizeX()
         && posY >= 0 && posY < getSizeY())
     {
-      return Optional.ofNullable(getField()[posX][posY]);
+      return Optional.ofNullable(getGrid()[posX][posY]);
     }
 
     throw new IndexOutOfBoundsException("The coordinates [" + posX + ", " + posY +
@@ -131,7 +130,7 @@ public class CrystalGrid
    */
   public void setCrystal(int posX, int posY, Crystal crystal)
   {
-    getField()[posX][posY] = crystal;
+    getGrid()[posX][posY] = crystal;
   }
 
   /**
@@ -165,18 +164,18 @@ public class CrystalGrid
    *
    * @return A copy of the internal grid
    */
-  public Crystal[][] viewField()
+  public Crystal[][] viewGrid()
   {
-    Crystal[][] grid = new Crystal[getSizeX()][getSizeY()];
+    Crystal[][] gridCopy = new Crystal[getSizeX()][getSizeY()];
     for(int x = 0; x < getSizeX(); x++)
     {
       for(int y = 0; y < getSizeY(); y++)
       {
-        grid[x][y] = getCrystal(x, y).orElse(null);
+        gridCopy[x][y] = getCrystal(x, y).orElse(null);
       }
     }
 
-    return grid;
+    return gridCopy;
   }
 
   /**
@@ -185,13 +184,13 @@ public class CrystalGrid
    * adjacent to each other is considered to be a "change" of the grid, even if the two targeted fields contain the same
    * type of crystal (Or null).
    *
-   * @param move The move object representing the move to be done.
+   * @param crystalPair The move object representing the move to be done.
    * @return True if the request resulted in a change of the grid, false otherwise
    * @throws IndexOutOfBoundsException if the supplied coordinates are outside of the grid.
    */
-  public boolean switchCrystals(Move move)
+  public boolean switchNeighbors(CrystalPair crystalPair)
   {
-    return switchCrystals(move.getX1(), move.getY1(), move.getX2(), move.getY2());
+    return switchNeighbors(crystalPair.getX1(), crystalPair.getY1(), crystalPair.getX2(), crystalPair.getY2());
   }
 
   /**
@@ -207,11 +206,11 @@ public class CrystalGrid
    * @return True if the request resulted in a change of the grid, false otherwise
    * @throws IndexOutOfBoundsException if the supplied coordinates are outside of the grid.
    */
-  public boolean switchCrystals(int posXOne, int posYOne, int posXTwo, int posYTwo)
+  public boolean switchNeighbors(int posXOne, int posYOne, int posXTwo, int posYTwo)
   {
     if(Math.abs(posXOne - posXTwo) + Math.abs(posYOne - posYTwo) == 1)
     {
-      exchangeCrystals(posXOne, posYOne, posXTwo, posYTwo);
+      switchCrystals(posXOne, posYOne, posXTwo, posYTwo);
       return true;
     }
 
@@ -222,16 +221,16 @@ public class CrystalGrid
    * Swaps the positions of two crystals, or a crystal and an empty field.
    * @throws IndexOutOfBoundsException if the supplied coordinates are outside of the grid.
    */
-  private void exchangeCrystals(int posXOne, int posYOne, int posXTwo, int posYTwo)
+  private void switchCrystals(int posXOne, int posYOne, int posXTwo, int posYTwo)
   {
-    Optional<Crystal> crysOne = getCrystal(posXOne, posYOne);
-    Optional<Crystal> crysTwo = getCrystal(posXTwo, posYTwo);
+    Optional<Crystal> crystalOne = getCrystal(posXOne, posYOne);
+    Optional<Crystal> crystalTwo = getCrystal(posXTwo, posYTwo);
 
-    setCrystal(posXOne, posYOne, crysTwo.orElse(null));
-    setCrystal(posXTwo, posYTwo, crysOne.orElse(null));
+    setCrystal(posXOne, posYOne, crystalTwo.orElse(null));
+    setCrystal(posXTwo, posYTwo, crystalOne.orElse(null));
   }
 
-  protected int triggerRegions(Map<Crystal, List<CrystalRegion>> regions, RegionScorer scorer)
+  protected int triggerRegions(Map<Crystal, List<CrystalCombination>> regions, CombinationScorer scorer)
   {
     return regions.values().stream()
         .flatMap(List::stream)
@@ -258,7 +257,7 @@ public class CrystalGrid
    *
    * @return The total scores for the deleted regions
    */
-  public int triggerRegions(RegionFinder finder, RegionScorer scorer)
+  public int triggerRegions(CombinationFinder finder, CombinationScorer scorer)
   {
     return triggerRegions(finder.findRegions(this), scorer);
   }
@@ -281,7 +280,7 @@ public class CrystalGrid
 
         if(shift <= y)
         {
-          exchangeCrystals(x, y, x,y - shift);
+          switchCrystals(x, y, x,y - shift);
         }
       }
     }

@@ -17,28 +17,28 @@ import java.util.*;
 public class DefaultMoveExecutor implements MoveExecutor
 {
   @Override
-  public List<CrystalEvent> executeMove(CrystalGrid grid, RegionFinder finder, RegionScorer scorer, Move move)
+  public List<GameUpdate> executeMove(CrystalGrid grid, CombinationFinder finder, CombinationScorer scorer, CrystalPair move)
   {
-    List<CrystalEvent> events = new LinkedList<>();
-    Crystal[][] oldGrid = grid.viewField();
-    if(grid.switchCrystals(move))
+    List<GameUpdate> events = new LinkedList<>();
+    Crystal[][] oldGrid = grid.viewGrid();
+    if(grid.switchNeighbors(move))
     {
-      Crystal[][] moveGrid = grid.viewField();
-      events.add(new CrystalEvent.Move(oldGrid, moveGrid));
+      Crystal[][] moveGrid = grid.viewGrid();
+      events.add(new GameUpdate.Move(oldGrid, moveGrid));
 
       int scoreDelta = grid.triggerRegions(finder, scorer);
-      Crystal[][] triggerGrid = grid.viewField();
-      events.add(new CrystalEvent.Trigger(scoreDelta, moveGrid, triggerGrid));
+      Crystal[][] triggerGrid = grid.viewGrid();
+      events.add(new GameUpdate.Trigger(scoreDelta, moveGrid, triggerGrid));
 
       grid.shiftCrystals();
-      Crystal[][] shiftGrid = grid.viewField();
-      events.add(new CrystalEvent.Shift(triggerGrid, shiftGrid));
+      Crystal[][] shiftGrid = grid.viewGrid();
+      events.add(new GameUpdate.Shift(triggerGrid, shiftGrid));
 
       grid.fillGrid();
-      Crystal[][] newGrid = grid.viewField();
-      events.add(new CrystalEvent.Fill(shiftGrid, newGrid));
+      Crystal[][] newGrid = grid.viewGrid();
+      events.add(new GameUpdate.Fill(shiftGrid, newGrid));
 
-      events.add(new CrystalEvent.TurnEnd());
+      events.add(new GameUpdate.TurnEnd());
     }
 
     return events;

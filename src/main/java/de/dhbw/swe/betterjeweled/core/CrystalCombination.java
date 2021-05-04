@@ -33,18 +33,17 @@ import lombok.*;
  * [0, 0; 0, 0]
  */
 @Value
-// TODO: Rename to CrystalCombination
-public class CrystalRegion
+public class CrystalCombination
 {
   @Getter(AccessLevel.PRIVATE)
   Set<Position> positions;
 
-  private CrystalRegion(Collection<Position> positions)
+  private CrystalCombination(Collection<Position> positions)
   {
     this.positions = new HashSet<>(positions);
   }
 
-  public CrystalRegion(int startX, int startY, int endX, int endY)
+  public CrystalCombination(int startX, int startY, int endX, int endY)
   {
     this(Collections.emptySet());
 
@@ -85,14 +84,14 @@ public class CrystalRegion
    * @param other The second CrystalRegion to test
    * @return whether two regions intersect
    */
-  public boolean intersects(CrystalRegion other)
+  public boolean intersects(CrystalCombination other)
   {
     return getPositions().stream()
         .anyMatch(other.getPositions()::contains);
   }
 
   @SuppressWarnings("SuspiciousNameCombination")
-  public CrystalRegion transposed()
+  public CrystalCombination transposed()
   {
     if(!getPositions().isEmpty())
     {
@@ -108,11 +107,11 @@ public class CrystalRegion
         endX = Math.max(endX, position.getX());
         endY = Math.max(endY, position.getY());
       }
-      return new CrystalRegion(startY, startX,endY + 1,endX + 1);
+      return new CrystalCombination(startY, startX,endY + 1,endX + 1);
     }
     else
     {
-      return new CrystalRegion(Collections.emptySet());
+      return new CrystalCombination(Collections.emptySet());
     }
   }
 
@@ -121,7 +120,7 @@ public class CrystalRegion
    * @param regions An array of CrystalRegions to merge
    * @return the merged CrystalRegion
    */
-  public static CrystalRegion merge(CrystalRegion... regions)
+  public static CrystalCombination merge(CrystalCombination... regions)
   {
     return merge(Arrays.asList(regions));
   }
@@ -131,14 +130,14 @@ public class CrystalRegion
    * @param regions A Collection of CrystalRegions to merge
    * @return the merged CrystalRegion
    */
-  public static CrystalRegion merge(Collection<CrystalRegion> regions)
+  public static CrystalCombination merge(Collection<CrystalCombination> regions)
   {
     Set<Position> fields = regions.stream()
-        .map(CrystalRegion::getPositions)
+        .map(CrystalCombination::getPositions)
         .flatMap(Collection::stream)
         .collect(Collectors.toSet());
 
-    return new CrystalRegion(fields);
+    return new CrystalCombination(fields);
   }
 
   /**

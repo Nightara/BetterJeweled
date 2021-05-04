@@ -3,8 +3,7 @@ package de.dhbw.swe.betterjeweled.core;
 import lombok.*;
 
 @Value
-// TODO: Rename to CrystalPair
-public class Move
+public class CrystalPair
 {
   int x1;
   int y1;
@@ -18,12 +17,12 @@ public class Move
     if(this == o) return true;
     if(o == null || getClass() != o.getClass()) return false;
 
-    Move move = (Move) o;
+    CrystalPair crystalPair = (CrystalPair) o;
 
-    return (getX1() == move.getX1() && getY1() == move.getY1()
-          && getX2() == move.getX2() && getY2() == move.getY2())
-        || (getX1() == move.getX2() && getY1() == move.getY2()
-          && getX2() == move.getX1() && getY2() == move.getY1());
+    return (getX1() == crystalPair.getX1() && getY1() == crystalPair.getY1()
+          && getX2() == crystalPair.getX2() && getY2() == crystalPair.getY2())
+        || (getX1() == crystalPair.getX2() && getY1() == crystalPair.getY2()
+          && getX2() == crystalPair.getX1() && getY2() == crystalPair.getY1());
   }
 
   @Override

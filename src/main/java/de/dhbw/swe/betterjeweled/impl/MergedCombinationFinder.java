@@ -8,10 +8,10 @@ import java.util.*;
 
 @Value
 @NonFinal
-public class MergedRegionFinder implements RegionFinder
+public class MergedCombinationFinder implements CombinationFinder
 {
   @Getter(AccessLevel.PRIVATE)
-  RegionFinder regionFinder;
+  CombinationFinder combinationFinder;
 
   /**
    * This method takes regions found by another region finder (usually the default one) and merges the overlapping ones.
@@ -21,23 +21,23 @@ public class MergedRegionFinder implements RegionFinder
    * @return a map of merged CrystalRegions for each color of crystals.
    */
   @Override
-  public Map<Crystal, List<CrystalRegion>> findRegions(CrystalGrid grid, Collection<Crystal> crystals)
+  public Map<Crystal, List<CrystalCombination>> findRegions(CrystalGrid grid, Collection<Crystal> crystals)
   {
-    Map<Crystal, List<CrystalRegion>> regions = getRegionFinder().findRegions(grid, crystals);
-    Map<Crystal, List<CrystalRegion>> toReturn = new HashMap<>();
-    for(Map.Entry<Crystal, List<CrystalRegion>> entry : regions.entrySet())
+    Map<Crystal, List<CrystalCombination>> regions = getCombinationFinder().findRegions(grid, crystals);
+    Map<Crystal, List<CrystalCombination>> toReturn = new HashMap<>();
+    for(Map.Entry<Crystal, List<CrystalCombination>> entry : regions.entrySet())
     {
       Crystal crystal = entry.getKey();
-      List<CrystalRegion> temp = entry.getValue();
+      List<CrystalCombination> temp = entry.getValue();
       for(int i = 0; i < temp.size(); i++)
       {
-        CrystalRegion firstRegion = temp.get(i);
+        CrystalCombination firstRegion = temp.get(i);
         for(int j = temp.size() - 1; j > i; j--)
         {
-          CrystalRegion secondRegion = temp.get(j);
+          CrystalCombination secondRegion = temp.get(j);
           if(firstRegion.intersects(secondRegion))
           {
-            firstRegion = CrystalRegion.merge(firstRegion, secondRegion);
+            firstRegion = CrystalCombination.merge(firstRegion, secondRegion);
             temp.remove(secondRegion);
           }
         }

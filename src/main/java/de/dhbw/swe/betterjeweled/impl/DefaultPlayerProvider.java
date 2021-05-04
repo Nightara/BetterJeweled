@@ -5,19 +5,19 @@ import lombok.*;
 
 import java.util.*;
 
-public class DefaultPlayerRotator implements PlayerRotator
+public class DefaultPlayerProvider implements PlayerProvider
 {
   @Setter
   private List<Player> players;
 
   private int nextIndex = 0;
 
-  public DefaultPlayerRotator(Player... players)
+  public DefaultPlayerProvider(Player... players)
   {
     this(Arrays.asList(players));
   }
 
-  public DefaultPlayerRotator(List<Player> players)
+  public DefaultPlayerProvider(List<Player> players)
   {
     this.players = players;
   }

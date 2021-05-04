@@ -5,8 +5,7 @@ import lombok.experimental.*;
 
 @Value
 @NonFinal
-// TODO: Rename CrystalEvent class for DDD
-public abstract class CrystalEvent
+public abstract class GameUpdate
 {
   int scoreDelta;
   Crystal[][] oldGrid;
@@ -14,7 +13,7 @@ public abstract class CrystalEvent
   ModifierType modifierType;
 
   @ToString(callSuper=true)
-  public static class Move extends CrystalEvent
+  public static class Move extends GameUpdate
   {
     public Move(Crystal[][] oldGrid, Crystal[][] updatedGrid)
     {
@@ -23,7 +22,7 @@ public abstract class CrystalEvent
   }
 
   @ToString(callSuper=true)
-  public static class Trigger extends CrystalEvent
+  public static class Trigger extends GameUpdate
   {
     public Trigger(int scoreDelta, Crystal[][] oldGrid, Crystal[][] updatedGrid)
     {
@@ -32,7 +31,7 @@ public abstract class CrystalEvent
   }
 
   @ToString(callSuper=true)
-  public static class Shift extends CrystalEvent
+  public static class Shift extends GameUpdate
   {
     public Shift(Crystal[][] oldGrid, Crystal[][] updatedGrid)
     {
@@ -41,7 +40,7 @@ public abstract class CrystalEvent
   }
 
   @ToString(callSuper=true)
-  public static class Fill extends CrystalEvent
+  public static class Fill extends GameUpdate
   {
     public Fill(Crystal[][] oldGrid, Crystal[][] updatedGrid)
     {
@@ -50,7 +49,7 @@ public abstract class CrystalEvent
   }
 
   @ToString(callSuper=true)
-  public static class TurnEnd extends CrystalEvent
+  public static class TurnEnd extends GameUpdate
   {
     public TurnEnd()
     {

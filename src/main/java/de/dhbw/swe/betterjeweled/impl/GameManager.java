@@ -26,9 +26,9 @@ public class GameManager
 {
   EventBus eventBus;
   CrystalGrid grid;
-  RegionFinder finder;
-  RegionScorer scorer;
-  PlayerRotator rotator;
+  CombinationFinder finder;
+  CombinationScorer scorer;
+  PlayerProvider rotator;
   MoveExecutor executor;
   List<BusPlayerAdapter> players;
 
@@ -36,15 +36,15 @@ public class GameManager
   @Setter(AccessLevel.PRIVATE)
   boolean listening = false;
 
-  public GameManager(CrystalGrid grid, RegionFinder finder, RegionScorer scorer, PlayerRotator rotator,
-                        MoveExecutor executor, Player... players)
+  public GameManager(CrystalGrid grid, CombinationFinder finder, CombinationScorer scorer, PlayerProvider rotator,
+                     MoveExecutor executor, Player... players)
   {
     this(grid, finder, scorer, rotator, executor,true, players);
   }
 
   @SuppressWarnings("java:S2234")
-  protected GameManager(CrystalGrid grid, RegionFinder finder, RegionScorer scorer, PlayerRotator rotator,
-                     MoveExecutor executor, boolean autoLaunch, Player... players)
+  protected GameManager(CrystalGrid grid, CombinationFinder finder, CombinationScorer scorer, PlayerProvider rotator,
+                        MoveExecutor executor, boolean autoLaunch, Player... players)
   {
     this(new EventBus(), grid, finder, scorer, rotator, executor, new LinkedList<>());
     Arrays.stream(players)
@@ -87,17 +87,17 @@ public class GameManager
   }
 
   @Subscribe
-  private void acceptMove(Move move)
+  private void acceptMove(CrystalPair crystalPair)
   {
-    if(isListening() && move.getSource() == getRotator().peek())
+    if(isListening() && crystalPair.getSource() == getRotator().peek())
     {
-      getExecutor().executeMove(getGrid(), getFinder(), getScorer(), move)
+      getExecutor().executeMove(getGrid(), getFinder(), getScorer(), crystalPair)
           .forEach(getEventBus()::post);
     }
   }
 
   @Subscribe
-  private void endTurn(CrystalEvent.TurnEnd event)
+  private void endTurn(GameUpdate.TurnEnd event)
   {
     if(isListening())
     {

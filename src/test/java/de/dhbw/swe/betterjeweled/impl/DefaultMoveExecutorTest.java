@@ -14,8 +14,8 @@ class DefaultMoveExecutorTest
   private static final Crystal GREEN = new Crystal(Color.GREEN);
   private static final Crystal BLUE = new Crystal(Color.BLUE);
 
-  private static RegionFinder finder;
-  private static RegionScorer scorer;
+  private static CombinationFinder finder;
+  private static CombinationScorer scorer;
   private static MoveExecutor executor;
 
   private CrystalGrid grid;
@@ -24,11 +24,11 @@ class DefaultMoveExecutorTest
   static void setupClass()
   {
     executor = new DefaultMoveExecutor();
-    finder = Mockito.mock(RegionFinder.class);
+    finder = Mockito.mock(CombinationFinder.class);
     Mockito.when(finder.findRegions(Mockito.any(CrystalGrid.class), Mockito.any(Crystal[].class)))
         .thenReturn(new HashMap<>());
-    scorer = Mockito.mock(RegionScorer.class);
-    Mockito.when(scorer.scoreRegion(Mockito.any(CrystalRegion.class))).thenReturn(0);
+    scorer = Mockito.mock(CombinationScorer.class);
+    Mockito.when(scorer.scoreRegion(Mockito.any(CrystalCombination.class))).thenReturn(0);
   }
 
   @BeforeEach
@@ -41,26 +41,26 @@ class DefaultMoveExecutorTest
   @Test
   void testExecuteLegalMove()
   {
-    Move legalMove = new Move(0,0,0,1,null);
+    CrystalPair legalCrystalPair = new CrystalPair(0,0,0,1,null);
 
-    List<CrystalEvent> events = executor.executeMove(grid, finder, scorer, legalMove);
+    List<GameUpdate> events = executor.executeMove(grid, finder, scorer, legalCrystalPair);
 
     Assertions.assertEquals(5, events.size());
-    Assertions.assertEquals(CrystalEvent.Move.class, events.get(0).getClass());
-    Assertions.assertEquals(CrystalEvent.Trigger.class, events.get(1).getClass());
-    Assertions.assertEquals(CrystalEvent.Shift.class, events.get(2).getClass());
-    Assertions.assertEquals(CrystalEvent.Fill.class, events.get(3).getClass());
+    Assertions.assertEquals(GameUpdate.Move.class, events.get(0).getClass());
+    Assertions.assertEquals(GameUpdate.Trigger.class, events.get(1).getClass());
+    Assertions.assertEquals(GameUpdate.Shift.class, events.get(2).getClass());
+    Assertions.assertEquals(GameUpdate.Fill.class, events.get(3).getClass());
   }
 
   @Test
   void testExecuteIllegalMove()
   {
-    Move illegalMove = new Move(0,0,1,1,null);
-    Crystal[][] oldGrid = grid.viewField();
+    CrystalPair illegalCrystalPair = new CrystalPair(0,0,1,1,null);
+    Crystal[][] oldGrid = grid.viewGrid();
 
-    List<CrystalEvent> events = executor.executeMove(grid, finder, scorer, illegalMove);
+    List<GameUpdate> events = executor.executeMove(grid, finder, scorer, illegalCrystalPair);
 
     Assertions.assertEquals(0, events.size());
-    Assertions.assertArrayEquals(oldGrid, grid.viewField());
+    Assertions.assertArrayEquals(oldGrid, grid.viewGrid());
   }
 }

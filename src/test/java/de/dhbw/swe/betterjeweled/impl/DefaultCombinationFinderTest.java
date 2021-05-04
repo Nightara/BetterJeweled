@@ -7,7 +7,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-class DefaultRegionFinderTest
+class DefaultCombinationFinderTest
 {
   private static final Crystal RED = new Crystal(Color.RED);
   private static final Crystal GREEN = new Crystal(Color.GREEN);
@@ -52,9 +52,9 @@ class DefaultRegionFinderTest
   @Test
   void findDefaultRegions()
   {
-    RegionFinder regionFinder = new DefaultRegionFinder();
+    CombinationFinder combinationFinder = new DefaultCombinationFinder();
 
-    Map<Crystal, List<CrystalRegion>> regions = regionFinder.findRegions(grid, grid.getColors());
+    Map<Crystal, List<CrystalCombination>> regions = combinationFinder.findRegions(grid, grid.getColors());
 
     Assertions.assertEquals(3, regions.keySet().size());
     Assertions.assertEquals(3, regions.get(RED).size());
@@ -65,7 +65,7 @@ class DefaultRegionFinderTest
   @Test
   void findRegionsWithMerging()
   {
-    Map<Crystal, List<CrystalRegion>> regions = new MergedRegionFinder(new DefaultRegionFinder()).findRegions(grid);
+    Map<Crystal, List<CrystalCombination>> regions = new MergedCombinationFinder(new DefaultCombinationFinder()).findRegions(grid);
 
     Assertions.assertEquals(3, regions.keySet().size());
     Assertions.assertEquals(2, regions.get(RED).size());
@@ -90,8 +90,8 @@ class DefaultRegionFinderTest
             new Boolean[]{false, true, false},
         };
 
-    Assertions.assertArrayEquals(transposed, DefaultRegionFinder.transposeGrid(grid));
-    Assertions.assertArrayEquals(grid, DefaultRegionFinder.transposeGrid(transposed));
-    Assertions.assertArrayEquals(grid, DefaultRegionFinder.transposeGrid(DefaultRegionFinder.transposeGrid(grid)));
+    Assertions.assertArrayEquals(transposed, DefaultCombinationFinder.transposeGrid(grid));
+    Assertions.assertArrayEquals(grid, DefaultCombinationFinder.transposeGrid(transposed));
+    Assertions.assertArrayEquals(grid, DefaultCombinationFinder.transposeGrid(DefaultCombinationFinder.transposeGrid(grid)));
   }
 }

@@ -3,7 +3,6 @@ package de.dhbw.swe.betterjeweled.impl;
 import com.google.common.eventbus.*;
 import de.dhbw.swe.betterjeweled.core.*;
 import lombok.*;
-import lombok.experimental.*;
 
 import java.util.concurrent.atomic.*;
 
@@ -83,8 +82,8 @@ public class BusPlayerAdapter extends Thread
   }
 
   @Subscribe
-  protected void handleChangeEvent(CrystalEvent changeEvent)
+  protected void handleGameUpdate(GameUpdate changeEvent)
   {
-    getPlayer().handleChangeEvent(changeEvent);
+    getPlayer().handleGameUpdate(changeEvent);
   }
 }

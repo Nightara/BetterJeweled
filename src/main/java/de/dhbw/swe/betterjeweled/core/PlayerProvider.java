@@ -1,7 +1,6 @@
 package de.dhbw.swe.betterjeweled.core;
 
-// TODO: Change "rotator" to more domain specific name(?)
-public interface PlayerRotator
+public interface PlayerProvider
 {
   Player peek();
   Player reset();
