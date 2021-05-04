@@ -30,7 +30,8 @@ public class GameManager
   CombinationScorer scorer;
   PlayerProvider provider;
   MoveExecutor executor;
-  List<BusPlayerAdapter> players;
+  Map<Player, Integer> scores;
+  List<BusPlayerAdapter> playerThreads;
 
   @NonFinal
   @Setter(AccessLevel.PRIVATE)
@@ -46,14 +47,18 @@ public class GameManager
   protected GameManager(CrystalGrid grid, CombinationFinder finder, CombinationScorer scorer, PlayerProvider provider,
                         MoveExecutor executor, boolean autoLaunch, Player... players)
   {
-    this(new EventBus(), grid, finder, scorer, provider, executor, new LinkedList<>());
+    this(new EventBus(), grid, finder, scorer, rotator, executor, new HashMap<>(), new LinkedList<>());
     Arrays.stream(players)
         .map(player -> new BusPlayerAdapter(player, this.eventBus))
-        .forEach(this.players::add);
+        .forEach(player ->
+        {
+          this.playerThreads.add(player);
+          scores.put(player.getPlayer(), 0);
+        });
 
     if(autoLaunch)
     {
-      getPlayers().forEach(Thread::start);
+      launchThreads();
     }
   }
 
@@ -64,7 +69,7 @@ public class GameManager
    */
   protected void launchThreads()
   {
-    getPlayers().stream()
+    getPlayerThreads().stream()
         .filter(Predicate.not(Thread::isAlive))
         .forEach(Thread::start);
   }
@@ -92,7 +97,14 @@ public class GameManager
     if(isListening() && crystalPair.getSource() == getProvider().peek())
     {
       getExecutor().executeMove(getGrid(), getFinder(), getScorer(), crystalPair)
-          .forEach(getEventBus()::post);
+          .forEach(update ->
+          {
+            getEventBus().post(update);
+            if(update.getScoreDelta() != 0)
+            {
+              getScores().put(crystalPair.getSource(), getScores().get(crystalPair.getSource()) + update.getScoreDelta());
+            }
+          });
     }
   }
 

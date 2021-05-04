@@ -67,7 +67,7 @@ public class StreamPlayer implements Player
           }
           else
           {
-            getOut().write("invalid input\n".getBytes(StandardCharsets.UTF_8));
+            getOut().write("Invalid input\n".getBytes(StandardCharsets.UTF_8));
           }
           getOut().flush();
         }

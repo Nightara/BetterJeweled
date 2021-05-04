@@ -21,6 +21,7 @@ public class FxPlayer implements Initializable, Player
   @FXML
   private Label scoreBoard;
 
+  @Getter(AccessLevel.PROTECTED)
   private ObservableList<CoordinateToggleButton> triggeredButtons;
 
   @Override
@@ -81,7 +82,7 @@ public class FxPlayer implements Initializable, Player
 
   private CoordinateToggleButton generateCrystalNode(int posX, int posY, Crystal crystal)
   {
-    CoordinateToggleButton button = new CoordinateToggleButton(crystal == null ? "-/-" : crystal.toString(), posX, posY);
+    CrystalButton button = new CrystalButton(crystal, posX, posY);
     button.setOnAction(a -> toggleCrystal(button));
 
     return button;

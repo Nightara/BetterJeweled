@@ -49,7 +49,11 @@ public class BusPlayerAdapter extends Thread
     getRunning().set(true);
     while(!getCancelled().get())
     {
-      getEventBus().post(getPlayer().getNextMove());
+      Move nextMove = getPlayer().getNextMove();
+      if(nextMove != null)
+      {
+        getEventBus().post(nextMove);
+      }
     }
 
     getRunning().set(false);
