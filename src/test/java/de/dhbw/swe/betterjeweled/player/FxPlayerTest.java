@@ -97,7 +97,7 @@ class FxPlayerTest
   @MethodSource("generateFilledGrids")
   void fillFxPlayer(Crystal[][] crystalGrid)
   {
-    player.handleChangeEvent(new CrystalEvent.Fill(new Crystal[0][0], crystalGrid));
+    player.handleGameUpdate(new GameUpdate.Fill(new Crystal[0][0], crystalGrid));
 
     grid.getChildren().stream()
         .filter(CrystalButton.class::isInstance)
@@ -151,7 +151,7 @@ class FxPlayerTest
   @Test
   void testDoubleTrigger()
   {
-    player.handleChangeEvent(new CrystalEvent.Fill(new Crystal[5][5], new Crystal[5][5]));
+    player.handleGameUpdate(new GameUpdate.Fill(new Crystal[5][5], new Crystal[5][5]));
 
     Platform.runLater(() -> grid.getChildren().stream()
           .filter(CoordinateToggleButton.class::isInstance)

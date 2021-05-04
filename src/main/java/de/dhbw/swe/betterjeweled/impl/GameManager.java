@@ -47,7 +47,7 @@ public class GameManager
   protected GameManager(CrystalGrid grid, CombinationFinder finder, CombinationScorer scorer, PlayerProvider provider,
                         MoveExecutor executor, boolean autoLaunch, Player... players)
   {
-    this(new EventBus(), grid, finder, scorer, rotator, executor, new HashMap<>(), new LinkedList<>());
+    this(new EventBus(), grid, finder, scorer, provider, executor, new HashMap<>(), new LinkedList<>());
     Arrays.stream(players)
         .map(player -> new BusPlayerAdapter(player, this.eventBus))
         .forEach(player ->

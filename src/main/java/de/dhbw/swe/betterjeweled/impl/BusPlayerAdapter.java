@@ -49,7 +49,7 @@ public class BusPlayerAdapter extends Thread
     getRunning().set(true);
     while(!getCancelled().get())
     {
-      Move nextMove = getPlayer().getNextMove();
+      CrystalPair nextMove = getPlayer().getNextMove();
       if(nextMove != null)
       {
         getEventBus().post(nextMove);
