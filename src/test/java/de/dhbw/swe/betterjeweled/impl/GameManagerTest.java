@@ -85,4 +85,14 @@ class GameManagerTest
 
     Mockito.verify(manager.getRotator()).nextPlayer();
   }
+
+  @Test
+  void testLaunchThreads()
+  {
+    manager.launchThreads();
+
+    Mockito.verify(playerOne).run();
+    Mockito.verify(playerTwo).run();
+    Mockito.verify(playerThree).run();
+  }
 }

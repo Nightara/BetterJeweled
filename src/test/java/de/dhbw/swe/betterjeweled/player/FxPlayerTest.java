@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.*;
 import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.*;
 import org.testfx.framework.junit5.*;
+import org.testfx.util.*;
 
 import java.awt.*;
 import java.util.stream.*;
@@ -145,5 +146,21 @@ class FxPlayerTest
     });
 
     Assertions.assertEquals(new Move(posXOne, posYOne, posXTwo, posYTwo,null), player.getNextMove());
+  }
+
+  @Test
+  void testDoubleTrigger()
+  {
+    player.handleChangeEvent(new CrystalEvent.Fill(new Crystal[5][5], new Crystal[5][5]));
+
+    Platform.runLater(() -> grid.getChildren().stream()
+          .filter(CoordinateToggleButton.class::isInstance)
+          .map(CoordinateToggleButton.class::cast)
+          .forEach(button ->
+          {
+            button.fire();
+            button.fire();
+            Assertions.assertTrue(player.getTriggeredButtons().isEmpty());
+          }));
   }
 }

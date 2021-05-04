@@ -54,7 +54,7 @@ public class GameManager
 
     if(autoLaunch)
     {
-      getPlayers().forEach(Thread::start);
+      launchThreads();
     }
   }
 
@@ -63,7 +63,6 @@ public class GameManager
    * This method is called automatically with the public constructor or when calling the protected constructor with
    * autoLaunch = true.
    */
-  // TODO: Test
   protected void launchThreads()
   {
     getPlayers().stream()

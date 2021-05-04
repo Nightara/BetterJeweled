@@ -26,26 +26,32 @@ class StreamPlayerTest
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"1,2|2,3", "4,3 3,1", "0, 1|5, 5", "7,5 | 4,3", "9, 7 | 8, 6"})
+  @ValueSource(strings = {"1,2|2,3", "4,3 3,1", "0, 1|5, 5", "7,5 | 4,3", "9, 7 | 8, 6", "Invalid", "99"})
   void readStreamPlayerMove(String param) throws InterruptedException
   {
     InputStream in = new ByteArrayInputStream((param + "\n").getBytes(StandardCharsets.UTF_8));
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     StreamPlayer player = new StreamPlayer(in, out);
 
-    Matcher matcher = StreamPlayer.INPUT_PATTERN.matcher(param);
-    Assertions.assertTrue(matcher.matches());
-
-    int x1 = Integer.parseInt(matcher.group(1));
-    int y1 = Integer.parseInt(matcher.group(2));
-    int x2 = Integer.parseInt(matcher.group(3));
-    int y2 = Integer.parseInt(matcher.group(4));
-
     Thread playerThread = new Thread(player);
     playerThread.start();
     playerThread.join();
-    Assertions.assertEquals("Supplied move: Move(x1=" + x1 + ", y1=" + y1 + ", x2=" + x2 + ", y2=" + y2 + ", source=null)\n",
-        out.toString(StandardCharsets.UTF_8));
+
+    Matcher matcher = StreamPlayer.INPUT_PATTERN.matcher(param);
+    if(matcher.matches())
+    {
+      int x1 = Integer.parseInt(matcher.group(1));
+      int y1 = Integer.parseInt(matcher.group(2));
+      int x2 = Integer.parseInt(matcher.group(3));
+      int y2 = Integer.parseInt(matcher.group(4));
+
+      Assertions.assertEquals("Supplied move: Move(x1=" + x1 + ", y1=" + y1 + ", x2=" + x2 + ", y2=" + y2 + ", source=null)\n",
+          out.toString(StandardCharsets.UTF_8));
+    }
+    else
+    {
+      Assertions.assertEquals("Invalid input\n", out.toString(StandardCharsets.UTF_8));
+    }
   }
 
   @ParameterizedTest

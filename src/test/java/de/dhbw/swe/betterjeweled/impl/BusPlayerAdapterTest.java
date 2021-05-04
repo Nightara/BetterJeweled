@@ -54,11 +54,4 @@ class BusPlayerAdapterTest
       Assertions.assertFalse(adapter.getRunning().get());
     });
   }
-
-  @AfterEach
-  @SuppressWarnings("deprecation")
-  void tearDownTest()
-  {
-    adapters.forEach(Thread::stop);
-  }
 }
