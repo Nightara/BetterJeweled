@@ -45,7 +45,7 @@ class StreamPlayerTest
       int x2 = Integer.parseInt(matcher.group(3));
       int y2 = Integer.parseInt(matcher.group(4));
 
-      Assertions.assertEquals("Supplied move: Move(x1=" + x1 + ", y1=" + y1 + ", x2=" + x2 + ", y2=" + y2 + ", source=null)\n",
+      Assertions.assertEquals("Supplied move: CrystalPair(x1=" + x1 + ", y1=" + y1 + ", x2=" + x2 + ", y2=" + y2 + ", source=null)\n",
           out.toString(StandardCharsets.UTF_8));
     }
     else
@@ -63,7 +63,7 @@ class StreamPlayerTest
     StreamPlayer player = new StreamPlayer(in, out);
     new Thread(player).start();
 
-    player.handleChangeEvent(new CrystalEvent.Trigger(100, grid, grid));
+    player.handleGameUpdate(new GameUpdate.Trigger(100, grid, grid));
     String[] data = out.toString(StandardCharsets.UTF_8).split("\n");
     Assertions.assertEquals(2 * grid.length + 1, data[0].length());
     Assertions.assertEquals(2 * grid[0].length + 1, data.length);

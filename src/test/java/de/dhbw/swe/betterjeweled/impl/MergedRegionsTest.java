@@ -16,8 +16,8 @@ class MergedRegionsTest
   @Test
   void regionsIntersect()
   {
-    CrystalRegion region1 = new CrystalRegion(0, 0, 1, 3);
-    CrystalRegion region2 = new CrystalRegion(0, 0, 3, 1);
+    CrystalCombination region1 = new CrystalCombination(0, 0, 1, 3);
+    CrystalCombination region2 = new CrystalCombination(0, 0, 3, 1);
 
     Assertions.assertTrue(region1.intersects(region2));
   }
@@ -25,8 +25,8 @@ class MergedRegionsTest
   @Test
   void regionsDontIntersect()
   {
-    CrystalRegion region1 = new CrystalRegion(0, 0, 1, 3);
-    CrystalRegion region2 = new CrystalRegion(1, 1, 4, 2);
+    CrystalCombination region1 = new CrystalCombination(0, 0, 1, 3);
+    CrystalCombination region2 = new CrystalCombination(1, 1, 4, 2);
 
     Assertions.assertFalse(region1.intersects(region2));
   }
@@ -34,13 +34,13 @@ class MergedRegionsTest
   @Test
   void mergedRegionOverlapsNormalRegion()
   {
-    CrystalRegion region1 = new CrystalRegion(1, 1, 2, 4);
-    CrystalRegion region2 = new CrystalRegion(1, 1, 4, 2);
-    region1 = CrystalRegion.merge(region1, region2);
+    CrystalCombination region1 = new CrystalCombination(1, 1, 2, 4);
+    CrystalCombination region2 = new CrystalCombination(1, 1, 4, 2);
+    region1 = CrystalCombination.merge(region1, region2);
 
-    CrystalRegion region3 = new CrystalRegion(3, 0, 4, 3);
-    CrystalRegion region4 = new CrystalRegion(0, 3, 3, 4);
-    CrystalRegion region5 = new CrystalRegion(0, 0, 1, 3);
+    CrystalCombination region3 = new CrystalCombination(3, 0, 4, 3);
+    CrystalCombination region4 = new CrystalCombination(0, 3, 3, 4);
+    CrystalCombination region5 = new CrystalCombination(0, 0, 1, 3);
 
     Assertions.assertTrue(region1.intersects(region3));
     Assertions.assertTrue(region3.intersects(region1));
@@ -53,15 +53,15 @@ class MergedRegionsTest
   @Test
   void mergedRegionOverlapsMergedRegion()
   {
-    CrystalRegion region1 = new CrystalRegion(1, 1, 2, 4);
-    CrystalRegion region2 = new CrystalRegion(1, 1, 4, 2);
+    CrystalCombination region1 = new CrystalCombination(1, 1, 2, 4);
+    CrystalCombination region2 = new CrystalCombination(1, 1, 4, 2);
     Assertions.assertTrue(region1.intersects(region2));
-    region1 = CrystalRegion.merge(region1, region2);
+    region1 = CrystalCombination.merge(region1, region2);
 
-    CrystalRegion region3 = new CrystalRegion(3, 0, 4, 4);
-    CrystalRegion region4 = new CrystalRegion(3, 3, 6, 4);
+    CrystalCombination region3 = new CrystalCombination(3, 0, 4, 4);
+    CrystalCombination region4 = new CrystalCombination(3, 3, 6, 4);
     Assertions.assertTrue(region3.intersects(region4));
-    region3 = CrystalRegion.merge(region3, region4);
+    region3 = CrystalCombination.merge(region3, region4);
 
     Assertions.assertTrue(region1.intersects(region3));
   }
@@ -98,17 +98,17 @@ class MergedRegionsTest
   @Test
   void testMergingChainOverlaps()
   {
-    DefaultRegionFinder finder = new DefaultRegionFinder();
+    DefaultCombinationFinder finder = new DefaultCombinationFinder();
 
-    MergedRegionFinder mergeFinder = new MergedRegionFinder(finder);
+    MergedCombinationFinder mergeFinder = new MergedCombinationFinder(finder);
 
-    Map<Crystal, List<CrystalRegion>> regions = mergeFinder.findRegions(triggerGridWithOverlap(), new Crystal(Color.RED));
+    Map<Crystal, List<CrystalCombination>> regions = mergeFinder.findRegions(triggerGridWithOverlap(), new Crystal(Color.RED));
     Assertions.assertEquals(1, regions.size());
 
-    List<CrystalRegion> redRegions = regions.get(new Crystal(Color.RED));
+    List<CrystalCombination> redRegions = regions.get(new Crystal(Color.RED));
     Assertions.assertEquals(1, redRegions.size());
 
-    CrystalRegion mergedRegion = redRegions.get(0);
+    CrystalCombination mergedRegion = redRegions.get(0);
     Assertions.assertEquals(8, mergedRegion.getSize());
   }
 }

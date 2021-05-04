@@ -6,9 +6,9 @@ import org.junit.jupiter.params.provider.*;
 
 import java.util.stream.*;
 
-class CrystalRegionTest
+class CrystalCombinationTest
 {
-  private static Stream<Arguments> generateRegions()
+  private static Stream<Arguments> generateCombinations()
   {
     return Stream.of(
         Arguments.of(0, 0, 2, 3),
@@ -19,12 +19,12 @@ class CrystalRegionTest
   }
 
   @ParameterizedTest
-  @MethodSource("generateRegions")
+  @MethodSource("generateCombinations")
   @SuppressWarnings("SuspiciousNameCombination")
   void testTransposed(int startX, int startY, int endX, int endY)
   {
-    CrystalRegion region = new CrystalRegion(startX, startY, endX, endY);
-    CrystalRegion transposed = new CrystalRegion(startY, startX, endY, endX);
+    CrystalCombination region = new CrystalCombination(startX, startY, endX, endY);
+    CrystalCombination transposed = new CrystalCombination(startY, startX, endY, endX);
 
     Assertions.assertEquals(transposed, region.transposed());
     Assertions.assertEquals(region, transposed.transposed());

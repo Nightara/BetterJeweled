@@ -17,7 +17,7 @@ import java.util.function.*;
  * continuously polls <code>Player::getNextMove</code> into the EventBus.
  *
  * The core method of this class is <code>GameManager::awaitNextMove</code>, which registers the coordinator to its
- * EventBus and waits for a move provided by the player determined to be next by the supplied PlayerRotator.
+ * EventBus and waits for a move provided by the player determined to be next by the supplied PlayerProvider.
  */
 @Value
 @RequiredArgsConstructor(access=AccessLevel.PRIVATE)
@@ -26,9 +26,9 @@ public class GameManager
 {
   EventBus eventBus;
   CrystalGrid grid;
-  RegionFinder finder;
-  RegionScorer scorer;
-  PlayerRotator rotator;
+  CombinationFinder finder;
+  CombinationScorer scorer;
+  PlayerProvider provider;
   MoveExecutor executor;
   Map<Player, Integer> scores;
   List<BusPlayerAdapter> playerThreads;
@@ -37,17 +37,17 @@ public class GameManager
   @Setter(AccessLevel.PRIVATE)
   boolean listening = false;
 
-  public GameManager(CrystalGrid grid, RegionFinder finder, RegionScorer scorer, PlayerRotator rotator,
-                        MoveExecutor executor, Player... players)
+  public GameManager(CrystalGrid grid, CombinationFinder finder, CombinationScorer scorer, PlayerProvider provider,
+                     MoveExecutor executor, Player... players)
   {
-    this(grid, finder, scorer, rotator, executor,true, players);
+    this(grid, finder, scorer, provider, executor,true, players);
   }
 
   @SuppressWarnings("java:S2234")
-  protected GameManager(CrystalGrid grid, RegionFinder finder, RegionScorer scorer, PlayerRotator rotator,
-                     MoveExecutor executor, boolean autoLaunch, Player... players)
+  protected GameManager(CrystalGrid grid, CombinationFinder finder, CombinationScorer scorer, PlayerProvider provider,
+                        MoveExecutor executor, boolean autoLaunch, Player... players)
   {
-    this(new EventBus(), grid, finder, scorer, rotator, executor, new HashMap<>(), new LinkedList<>());
+    this(new EventBus(), grid, finder, scorer, provider, executor, new HashMap<>(), new LinkedList<>());
     Arrays.stream(players)
         .map(player -> new BusPlayerAdapter(player, this.eventBus))
         .forEach(player ->
@@ -79,7 +79,7 @@ public class GameManager
    * The GameManager is registered to its GameManager as listener, waiting for the next Move to be posted on the bus.
    *
    * Any Moves on the EventBus will be passed to GameManager::acceptMove, which in turn compares its
-   * <code>Move::getSource</code> to the player supplied by the internal PlayerRotator. Any Move objects not matching
+   * <code>Move::getSource</code> to the player supplied by the internal PlayerProvider. Any Move objects not matching
    * will be discarded.
    *
    * The emission of a CrystalEvent.TurnEnd will unregister the GameManager from the EventBus, requiring
@@ -92,28 +92,28 @@ public class GameManager
   }
 
   @Subscribe
-  private void acceptMove(Move move)
+  private void acceptMove(CrystalPair crystalPair)
   {
-    if(isListening() && move.getSource() == getRotator().peek())
+    if(isListening() && crystalPair.getSource() == getProvider().peek())
     {
-      getExecutor().executeMove(getGrid(), getFinder(), getScorer(), move)
+      getExecutor().executeMove(getGrid(), getFinder(), getScorer(), crystalPair)
           .forEach(update ->
           {
             getEventBus().post(update);
             if(update.getScoreDelta() != 0)
             {
-              getScores().put(move.getSource(), getScores().get(move.getSource()) + update.getScoreDelta());
+              getScores().put(crystalPair.getSource(), getScores().get(crystalPair.getSource()) + update.getScoreDelta());
             }
           });
     }
   }
 
   @Subscribe
-  private void endTurn(CrystalEvent.TurnEnd event)
+  private void endTurn(GameUpdate.TurnEnd update)
   {
     if(isListening())
     {
-      getRotator().nextPlayer();
+      getProvider().nextPlayer();
       setListening(false);
       getEventBus().unregister(this);
     }

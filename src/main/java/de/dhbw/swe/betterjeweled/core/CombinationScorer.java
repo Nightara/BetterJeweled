@@ -1,7 +1,7 @@
 package de.dhbw.swe.betterjeweled.core;
 
 @FunctionalInterface
-public interface RegionScorer
+public interface CombinationScorer
 {
   /**
    * Scores a supplied region. This method is expected to always fulfill the following requirements:<br />
@@ -15,5 +15,5 @@ public interface RegionScorer
    * @param region The regions to score
    * @return A score for deleting the supplied region
    */
-  int scoreRegion(CrystalRegion region);
+  int scoreRegion(CrystalCombination region);
 }

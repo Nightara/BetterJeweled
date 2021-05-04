@@ -51,8 +51,8 @@ class CrystalGridBoundsTest
     CrystalGrid grid = new CrystalGrid(3, 5, RED, GREEN, BLUE);
     grid.fillGrid();
 
-    assertThrows(IndexOutOfBoundsException.class, () -> grid.switchCrystals(0, -1, 0, 0));
-    assertThrows(IndexOutOfBoundsException.class, () -> grid.switchCrystals(2, 4, 3, 4));
-    assertThrows(IndexOutOfBoundsException.class, () -> grid.switchCrystals(-1, -1, -1, -2));
+    assertThrows(IndexOutOfBoundsException.class, () -> grid.switchNeighbors(0, -1, 0, 0));
+    assertThrows(IndexOutOfBoundsException.class, () -> grid.switchNeighbors(2, 4, 3, 4));
+    assertThrows(IndexOutOfBoundsException.class, () -> grid.switchNeighbors(-1, -1, -1, -2));
   }
 }

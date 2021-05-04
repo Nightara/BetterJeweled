@@ -7,7 +7,7 @@ import static de.dhbw.swe.betterjeweled.core.CrystalGrid.*;
 /**
  * The default implementation of RegionScorer.
  */
-public class DefaultRegionScorer implements RegionScorer
+public class DefaultCombinationScorer implements CombinationScorer
 {
   /**
    * Scores a supplied region. This class uses a square function to meet the requirements specified in the interface.
@@ -15,7 +15,7 @@ public class DefaultRegionScorer implements RegionScorer
    * @param region The region to score
    * @return A score for deleting the supplied region
    */
-  public int scoreRegion(CrystalRegion region)
+  public int scoreRegion(CrystalCombination region)
   {
     if(region.getSize() < MIN_COMBO_SIZE)
     {

@@ -39,7 +39,7 @@ public class FxPlayer implements Initializable, Player
 
   @Override
   @SneakyThrows
-  public synchronized Move getNextMove()
+  public synchronized CrystalPair getNextMove()
   {
     while(getTriggeredButtons().size() < 2)
     {
@@ -53,27 +53,27 @@ public class FxPlayer implements Initializable, Player
       CoordinateToggleButton b2 = getTriggeredButtons().remove(0);
       b2.setSelected(false);
 
-      return new Move(b1.getPosX(), b1.getPosY(), b2.getPosX(), b2.getPosY(),null);
+      return new CrystalPair(b1.getPosX(), b1.getPosY(), b2.getPosX(), b2.getPosY(),null);
     }
   }
 
   @Override
   @SneakyThrows
-  public void handleChangeEvent(CrystalEvent changeEvent)
+  public void handleGameUpdate(GameUpdate gameUpdate)
   {
     CountDownLatch finished = new CountDownLatch(1);
     Platform.runLater(() ->
     {
       getGameField().getChildren().clear();
-      for(int x = 0; x < changeEvent.getUpdatedGrid().length; x++)
+      for(int x = 0; x < gameUpdate.getUpdatedGrid().length; x++)
       {
-        for(int y = 0; y < changeEvent.getUpdatedGrid()[x].length; y++)
+        for(int y = 0; y < gameUpdate.getUpdatedGrid()[x].length; y++)
         {
-          getGameField().add(generateCrystalNode(x, y, changeEvent.getUpdatedGrid()[x][y]), x, y);
+          getGameField().add(generateCrystalNode(x, y, gameUpdate.getUpdatedGrid()[x][y]), x, y);
         }
       }
 
-      scoreBoard.setText("Current score: " + changeEvent.getScoreDelta());
+      scoreBoard.setText("Current score: " + gameUpdate.getScoreDelta());
       finished.countDown();
     });
 

@@ -17,23 +17,23 @@ class CrystalPairTest
     Assertions.assertNotEquals(playerOne, playerTwo);
 
     return Stream.of(
-        Arguments.of(new Move(0,1,2,3, playerOne), new Move(0,1,2,3, playerOne), true),
-        Arguments.of(new Move(0,1,2,3, playerOne), new Move(0,1,2,3, playerTwo), true),
-        Arguments.of(new Move(0,1,2,3, playerOne), new Move(2,3,0,1,null), true),
-        Arguments.of(new Move(0,1,2,3, playerOne), new Move(2,3,0,1, playerOne), true),
-        Arguments.of(new Move(0,1,-2,-3, playerOne), new Move(0,1,-2,-3, playerOne), true),
+        Arguments.of(new CrystalPair(0,1,2,3, playerOne), new CrystalPair(0,1,2,3, playerOne), true),
+        Arguments.of(new CrystalPair(0,1,2,3, playerOne), new CrystalPair(0,1,2,3, playerTwo), true),
+        Arguments.of(new CrystalPair(0,1,2,3, playerOne), new CrystalPair(2,3,0,1,null), true),
+        Arguments.of(new CrystalPair(0,1,2,3, playerOne), new CrystalPair(2,3,0,1, playerOne), true),
+        Arguments.of(new CrystalPair(0,1,-2,-3, playerOne), new CrystalPair(0,1,-2,-3, playerOne), true),
 
-        Arguments.of(new Move(0,1,2,3, playerOne), new Move(0,1,2,2, playerOne), false),
-        Arguments.of(new Move(0,1,2,3, playerOne), new Move(0,1,3,3, playerOne), false),
-        Arguments.of(new Move(0,1,2,3, playerOne), new Move(0,0,2,3, playerOne), false),
-        Arguments.of(new Move(0,1,2,3, playerOne), new Move(1,1,3,3, playerOne), false),
-        Arguments.of(new Move(0,1,2,3, playerOne), new Move(0,-1,-2,-3, playerOne), false)
+        Arguments.of(new CrystalPair(0,1,2,3, playerOne), new CrystalPair(0,1,2,2, playerOne), false),
+        Arguments.of(new CrystalPair(0,1,2,3, playerOne), new CrystalPair(0,1,3,3, playerOne), false),
+        Arguments.of(new CrystalPair(0,1,2,3, playerOne), new CrystalPair(0,0,2,3, playerOne), false),
+        Arguments.of(new CrystalPair(0,1,2,3, playerOne), new CrystalPair(1,1,3,3, playerOne), false),
+        Arguments.of(new CrystalPair(0,1,2,3, playerOne), new CrystalPair(0,-1,-2,-3, playerOne), false)
     );
   }
 
   @ParameterizedTest
   @MethodSource("generatePairs")
-  void testEquals(Move pairOne, Move pairTwo, Boolean equal)
+  void testEquals(CrystalPair pairOne, CrystalPair pairTwo, Boolean equal)
   {
     Assertions.assertEquals(pairOne.equals(pairTwo), pairTwo.equals(pairOne));
     Assertions.assertEquals(equal, pairOne.equals(pairTwo));
@@ -41,7 +41,7 @@ class CrystalPairTest
 
   @ParameterizedTest
   @MethodSource("generatePairs")
-  void testHashCode(Move pairOne, Move pairTwo, Boolean equal)
+  void testHashCode(CrystalPair pairOne, CrystalPair pairTwo, Boolean equal)
   {
     if(equal)
     {

@@ -2,7 +2,6 @@ package de.dhbw.swe.betterjeweled.impl;
 
 import com.google.common.eventbus.*;
 import de.dhbw.swe.betterjeweled.core.*;
-import lombok.*;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
 
@@ -22,9 +21,9 @@ class BusPlayerAdapterTest
   void setupTest()
   {
     playerOne = Mockito.mock(Player.class);
-    Mockito.when(playerOne.getNextMove()).thenReturn(new Move(0,0,0,1, playerOne));
+    Mockito.when(playerOne.getNextMove()).thenReturn(new CrystalPair(0,0,0,1, playerOne));
     playerTwo = Mockito.mock(Player.class);
-    Mockito.when(playerTwo.getNextMove()).thenReturn(new Move(1,1,1,2, playerTwo));
+    Mockito.when(playerTwo.getNextMove()).thenReturn(new CrystalPair(1,1,1,2, playerTwo));
 
     eventBus = new EventBus();
     adapters = Stream.of(playerOne, playerTwo)
@@ -34,13 +33,13 @@ class BusPlayerAdapterTest
   }
 
   @Test
-  void testAcceptEvent()
+  void testAcceptUpdate()
   {
-    CrystalEvent event = new CrystalEvent.Move(new Crystal[0][0], new Crystal[0][0]);
-    eventBus.post(event);
+    GameUpdate update = new GameUpdate.Move(new Crystal[0][0], new Crystal[0][0]);
+    eventBus.post(update);
 
-    Mockito.verify(playerOne).handleChangeEvent(event);
-    Mockito.verify(playerTwo).handleChangeEvent(event);
+    Mockito.verify(playerOne).handleGameUpdate(update);
+    Mockito.verify(playerTwo).handleGameUpdate(update);
   }
 
   @Test

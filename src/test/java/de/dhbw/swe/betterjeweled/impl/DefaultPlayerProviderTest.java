@@ -4,12 +4,12 @@ import de.dhbw.swe.betterjeweled.core.*;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
 
-class DefaultPlayerRotatorTest
+class DefaultPlayerProviderTest
 {
   private static Player playerOne;
   private static Player playerTwo;
 
-  private PlayerRotator rotator;
+  private PlayerProvider provider;
 
   @BeforeAll
   static void setupClass()
@@ -21,19 +21,19 @@ class DefaultPlayerRotatorTest
   @BeforeEach
   void setupTest()
   {
-    rotator = new DefaultPlayerRotator(playerOne, playerTwo);
+    provider = new DefaultPlayerProvider(playerOne, playerTwo);
   }
 
   @Test
   void testReset()
   {
-    Assertions.assertEquals(rotator.reset(), playerOne);
+    Assertions.assertEquals(provider.reset(), playerOne);
   }
 
   @Test
   void testNextPlayer()
   {
-    Assertions.assertNotEquals(rotator.nextPlayer(), rotator.nextPlayer());
+    Assertions.assertNotEquals(provider.nextPlayer(), provider.nextPlayer());
   }
 
   @Test
@@ -41,22 +41,22 @@ class DefaultPlayerRotatorTest
   {
     for(int x = 0; x < 100; x++)
     {
-      Assertions.assertNotNull(rotator.nextPlayer());
+      Assertions.assertNotNull(provider.nextPlayer());
     }
   }
 
   @Test
   void testPeek()
   {
-    Assertions.assertEquals(rotator.peek(), rotator.peek());
-    rotator.nextPlayer();
-    Assertions.assertEquals(rotator.peek(), rotator.peek());
+    Assertions.assertEquals(provider.peek(), provider.peek());
+    provider.nextPlayer();
+    Assertions.assertEquals(provider.peek(), provider.peek());
   }
 
   @Test
   void testPeekEqualsNext()
   {
-    Assertions.assertEquals(rotator.peek(), rotator.nextPlayer());
-    Assertions.assertEquals(rotator.peek(), rotator.nextPlayer());
+    Assertions.assertEquals(provider.peek(), provider.nextPlayer());
+    Assertions.assertEquals(provider.peek(), provider.nextPlayer());
   }
 }

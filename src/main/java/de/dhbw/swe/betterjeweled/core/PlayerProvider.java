@@ -1,6 +1,6 @@
 package de.dhbw.swe.betterjeweled.core;
 
-public interface PlayerRotator
+public interface PlayerProvider
 {
   Player peek();
   Player reset();
