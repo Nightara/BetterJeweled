@@ -24,7 +24,7 @@ class GameManagerTest
   {
     List<CrystalEvent> events = new LinkedList<>();
     events.add(new CrystalEvent.Move(new Crystal[0][0], new Crystal[0][0]));
-    events.add(new CrystalEvent.Trigger(0, new Crystal[0][0], new Crystal[0][0]));
+    events.add(new CrystalEvent.Trigger(10, new Crystal[0][0], new Crystal[0][0]));
     events.add(new CrystalEvent.Shift(new Crystal[0][0], new Crystal[0][0]));
     events.add(new CrystalEvent.Fill(new Crystal[0][0], new Crystal[0][0]));
     events.add(new CrystalEvent.TurnEnd());
@@ -94,5 +94,28 @@ class GameManagerTest
     Mockito.verify(playerOne).run();
     Mockito.verify(playerTwo).run();
     Mockito.verify(playerThree).run();
+  }
+
+  @Test
+  @SuppressWarnings("UnstableApiUsage")
+  void testUpdateScores()
+  {
+    Assertions.assertEquals(0, manager.getScores().get(playerOne));
+
+    manager.awaitNextMove();
+    manager.getEventBus().post(playerOne.getNextMove());
+
+    Assertions.assertEquals(10, manager.getScores().get(playerOne));
+
+    manager.awaitNextMove();
+    manager.getEventBus().post(playerOne.getNextMove());
+
+    Assertions.assertEquals(20, manager.getScores().get(playerOne));
+
+    manager.awaitNextMove();
+    manager.getEventBus().post(playerTwo.getNextMove());
+
+    Assertions.assertEquals(20, manager.getScores().get(playerOne));
+    Assertions.assertEquals(0, manager.getScores().get(playerTwo));
   }
 }

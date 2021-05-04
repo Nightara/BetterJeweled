@@ -24,14 +24,14 @@ import java.util.function.*;
 @SuppressWarnings("UnstableApiUsage")
 public class GameManager
 {
-  // TODO: Add score tracking per player
   EventBus eventBus;
   CrystalGrid grid;
   RegionFinder finder;
   RegionScorer scorer;
   PlayerRotator rotator;
   MoveExecutor executor;
-  List<BusPlayerAdapter> players;
+  Map<Player, Integer> scores;
+  List<BusPlayerAdapter> playerThreads;
 
   @NonFinal
   @Setter(AccessLevel.PRIVATE)
@@ -47,10 +47,14 @@ public class GameManager
   protected GameManager(CrystalGrid grid, RegionFinder finder, RegionScorer scorer, PlayerRotator rotator,
                      MoveExecutor executor, boolean autoLaunch, Player... players)
   {
-    this(new EventBus(), grid, finder, scorer, rotator, executor, new LinkedList<>());
+    this(new EventBus(), grid, finder, scorer, rotator, executor, new HashMap<>(), new LinkedList<>());
     Arrays.stream(players)
         .map(player -> new BusPlayerAdapter(player, this.eventBus))
-        .forEach(this.players::add);
+        .forEach(player ->
+        {
+          this.playerThreads.add(player);
+          scores.put(player.getPlayer(), 0);
+        });
 
     if(autoLaunch)
     {
@@ -65,7 +69,7 @@ public class GameManager
    */
   protected void launchThreads()
   {
-    getPlayers().stream()
+    getPlayerThreads().stream()
         .filter(Predicate.not(Thread::isAlive))
         .forEach(Thread::start);
   }
@@ -93,7 +97,14 @@ public class GameManager
     if(isListening() && move.getSource() == getRotator().peek())
     {
       getExecutor().executeMove(getGrid(), getFinder(), getScorer(), move)
-          .forEach(getEventBus()::post);
+          .forEach(update ->
+          {
+            getEventBus().post(update);
+            if(update.getScoreDelta() != 0)
+            {
+              getScores().put(move.getSource(), getScores().get(move.getSource()) + update.getScoreDelta());
+            }
+          });
     }
   }
 
