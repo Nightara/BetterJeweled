@@ -43,13 +43,13 @@ class DefaultMoveExecutorTest
   {
     CrystalPair legalCrystalPair = new CrystalPair(0,0,0,1,null);
 
-    List<GameUpdate> events = executor.executeMove(grid, finder, scorer, legalCrystalPair);
+    List<GameUpdate> updates = executor.executeMove(grid, finder, scorer, legalCrystalPair);
 
-    Assertions.assertEquals(5, events.size());
-    Assertions.assertEquals(GameUpdate.Move.class, events.get(0).getClass());
-    Assertions.assertEquals(GameUpdate.Trigger.class, events.get(1).getClass());
-    Assertions.assertEquals(GameUpdate.Shift.class, events.get(2).getClass());
-    Assertions.assertEquals(GameUpdate.Fill.class, events.get(3).getClass());
+    Assertions.assertEquals(5, updates.size());
+    Assertions.assertEquals(GameUpdate.Move.class, updates.get(0).getClass());
+    Assertions.assertEquals(GameUpdate.Trigger.class, updates.get(1).getClass());
+    Assertions.assertEquals(GameUpdate.Shift.class, updates.get(2).getClass());
+    Assertions.assertEquals(GameUpdate.Fill.class, updates.get(3).getClass());
   }
 
   @Test
@@ -58,9 +58,9 @@ class DefaultMoveExecutorTest
     CrystalPair illegalCrystalPair = new CrystalPair(0,0,1,1,null);
     Crystal[][] oldGrid = grid.viewGrid();
 
-    List<GameUpdate> events = executor.executeMove(grid, finder, scorer, illegalCrystalPair);
+    List<GameUpdate> updates = executor.executeMove(grid, finder, scorer, illegalCrystalPair);
 
-    Assertions.assertEquals(0, events.size());
+    Assertions.assertEquals(0, updates.size());
     Assertions.assertArrayEquals(oldGrid, grid.viewGrid());
   }
 }

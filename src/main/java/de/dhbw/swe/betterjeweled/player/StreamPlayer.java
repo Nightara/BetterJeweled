@@ -38,10 +38,10 @@ public class StreamPlayer implements Player
 
   @Override
   @SneakyThrows
-  public void handleGameUpdate(GameUpdate changeEvent)
+  public void handleGameUpdate(GameUpdate gameUpdate)
   {
-    setGrid(changeEvent.getUpdatedGrid());
-    setScore(changeEvent.getScoreDelta());
+    setGrid(gameUpdate.getUpdatedGrid());
+    setScore(gameUpdate.getScoreDelta());
 
     getOut().write(renderGrid().getBytes());
     getOut().flush();

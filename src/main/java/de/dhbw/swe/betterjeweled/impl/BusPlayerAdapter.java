@@ -82,8 +82,8 @@ public class BusPlayerAdapter extends Thread
   }
 
   @Subscribe
-  protected void handleGameUpdate(GameUpdate changeEvent)
+  protected void handleGameUpdate(GameUpdate update)
   {
-    getPlayer().handleGameUpdate(changeEvent);
+    getPlayer().handleGameUpdate(update);
   }
 }

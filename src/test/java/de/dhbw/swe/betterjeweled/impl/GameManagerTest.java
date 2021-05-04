@@ -22,12 +22,12 @@ class GameManagerTest
   @BeforeEach
   void setupTest()
   {
-    List<GameUpdate> events = new LinkedList<>();
-    events.add(new GameUpdate.Move(new Crystal[0][0], new Crystal[0][0]));
-    events.add(new GameUpdate.Trigger(0, new Crystal[0][0], new Crystal[0][0]));
-    events.add(new GameUpdate.Shift(new Crystal[0][0], new Crystal[0][0]));
-    events.add(new GameUpdate.Fill(new Crystal[0][0], new Crystal[0][0]));
-    events.add(new GameUpdate.TurnEnd());
+    List<GameUpdate> updates = new LinkedList<>();
+    updates.add(new GameUpdate.Move(new Crystal[0][0], new Crystal[0][0]));
+    updates.add(new GameUpdate.Trigger(0, new Crystal[0][0], new Crystal[0][0]));
+    updates.add(new GameUpdate.Shift(new Crystal[0][0], new Crystal[0][0]));
+    updates.add(new GameUpdate.Fill(new Crystal[0][0], new Crystal[0][0]));
+    updates.add(new GameUpdate.TurnEnd());
 
     playerOne = Mockito.mock(Player.class);
     Mockito.when(playerOne.getNextMove()).thenReturn(new CrystalPair(0,0,0,1, playerOne));
@@ -39,17 +39,17 @@ class GameManagerTest
         .thenReturn(new HashMap<>());
     CombinationScorer scorer = Mockito.mock(CombinationScorer.class);
     Mockito.when(scorer.scoreRegion(Mockito.any(CrystalCombination.class))).thenReturn(0);
-    PlayerProvider rotator = Mockito.mock(PlayerProvider.class);
-    Mockito.when(rotator.peek()).thenReturn(playerOne);
+    PlayerProvider provider = Mockito.mock(PlayerProvider.class);
+    Mockito.when(provider.peek()).thenReturn(playerOne);
     MoveExecutor executor = Mockito.mock(MoveExecutor.class);
     Mockito.when(executor.executeMove(Mockito.any(CrystalGrid.class), Mockito.eq(finder), Mockito.eq(scorer),
         Mockito.any(CrystalPair.class)))
-        .thenReturn(events);
+        .thenReturn(updates);
 
     CrystalGrid grid = new CrystalGrid(5,5, RED, GREEN, BLUE);
     grid.fillGrid();
 
-    manager = new GameManager(grid, finder, scorer, rotator, executor,false,
+    manager = new GameManager(grid, finder, scorer, provider, executor,false,
         playerOne, playerTwo, playerThree);
   }
 
@@ -83,6 +83,6 @@ class GameManagerTest
     manager.awaitNextMove();
     manager.getEventBus().post(new GameUpdate.TurnEnd());
 
-    Mockito.verify(manager.getRotator()).nextPlayer();
+    Mockito.verify(manager.getProvider()).nextPlayer();
   }
 }

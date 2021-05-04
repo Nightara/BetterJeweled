@@ -19,28 +19,28 @@ public class DefaultMoveExecutor implements MoveExecutor
   @Override
   public List<GameUpdate> executeMove(CrystalGrid grid, CombinationFinder finder, CombinationScorer scorer, CrystalPair move)
   {
-    List<GameUpdate> events = new LinkedList<>();
+    List<GameUpdate> updates = new LinkedList<>();
     Crystal[][] oldGrid = grid.viewGrid();
     if(grid.switchNeighbors(move))
     {
       Crystal[][] moveGrid = grid.viewGrid();
-      events.add(new GameUpdate.Move(oldGrid, moveGrid));
+      updates.add(new GameUpdate.Move(oldGrid, moveGrid));
 
       int scoreDelta = grid.triggerRegions(finder, scorer);
       Crystal[][] triggerGrid = grid.viewGrid();
-      events.add(new GameUpdate.Trigger(scoreDelta, moveGrid, triggerGrid));
+      updates.add(new GameUpdate.Trigger(scoreDelta, moveGrid, triggerGrid));
 
       grid.shiftCrystals();
       Crystal[][] shiftGrid = grid.viewGrid();
-      events.add(new GameUpdate.Shift(triggerGrid, shiftGrid));
+      updates.add(new GameUpdate.Shift(triggerGrid, shiftGrid));
 
       grid.fillGrid();
       Crystal[][] newGrid = grid.viewGrid();
-      events.add(new GameUpdate.Fill(shiftGrid, newGrid));
+      updates.add(new GameUpdate.Fill(shiftGrid, newGrid));
 
-      events.add(new GameUpdate.TurnEnd());
+      updates.add(new GameUpdate.TurnEnd());
     }
 
-    return events;
+    return updates;
   }
 }

@@ -58,21 +58,21 @@ public class FxPlayer implements Initializable, Player
 
   @Override
   @SneakyThrows
-  public void handleGameUpdate(GameUpdate changeEvent)
+  public void handleGameUpdate(GameUpdate gameUpdate)
   {
     CountDownLatch finished = new CountDownLatch(1);
     Platform.runLater(() ->
     {
       getGameField().getChildren().clear();
-      for(int x = 0; x < changeEvent.getUpdatedGrid().length; x++)
+      for(int x = 0; x < gameUpdate.getUpdatedGrid().length; x++)
       {
-        for(int y = 0; y < changeEvent.getUpdatedGrid()[x].length; y++)
+        for(int y = 0; y < gameUpdate.getUpdatedGrid()[x].length; y++)
         {
-          getGameField().add(generateCrystalNode(x, y, changeEvent.getUpdatedGrid()[x][y]), x, y);
+          getGameField().add(generateCrystalNode(x, y, gameUpdate.getUpdatedGrid()[x][y]), x, y);
         }
       }
 
-      scoreBoard.setText("Current score: " + changeEvent.getScoreDelta());
+      scoreBoard.setText("Current score: " + gameUpdate.getScoreDelta());
       finished.countDown();
     });
 

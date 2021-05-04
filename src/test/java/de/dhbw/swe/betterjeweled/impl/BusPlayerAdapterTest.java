@@ -33,13 +33,13 @@ class BusPlayerAdapterTest
   }
 
   @Test
-  void testAcceptEvent()
+  void testAcceptUpdate()
   {
-    GameUpdate event = new GameUpdate.Move(new Crystal[0][0], new Crystal[0][0]);
-    eventBus.post(event);
+    GameUpdate update = new GameUpdate.Move(new Crystal[0][0], new Crystal[0][0]);
+    eventBus.post(update);
 
-    Mockito.verify(playerOne).handleGameUpdate(event);
-    Mockito.verify(playerTwo).handleGameUpdate(event);
+    Mockito.verify(playerOne).handleGameUpdate(update);
+    Mockito.verify(playerTwo).handleGameUpdate(update);
   }
 
   @Test
